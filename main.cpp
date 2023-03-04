@@ -1,10 +1,33 @@
 #include <SFML/Graphics.hpp>
+#include <iostream> //pour ecrire dans la console.
+#include <vector> //pour les tableau dynamique
+#include <cmath> //pour tous les modules de math
+#include "main.h"
+#include "simulation.h"
+
+//name space
+using namespace sf;
+using namespace std;
+
+Simulation simulation;
+
+//constantes
+const int WIN_WIDTH = 1000;//taille de la window
+const int WIN_HEIGHT = 1000;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    cout << "bonjour tout le monde " << endl;
+
+    RenderWindow window(VideoMode(WIN_WIDTH, WIN_HEIGHT, 32), "Fractal Generator");
+    window.setTitle("Simulation TIPE");
+    window.setKeyRepeatEnabled(false);//pour éviter les trucs bisard quand on utilise sur le clavier
+    //activation Vsinc
+    window.setVerticalSyncEnabled(true);
+    simulation.print();//fonction de test
+
+
+    simulation.updateWindow(window);//pour lui passer en parametre les parametre de la window, comme la taille.
 
     while (window.isOpen())
     {
@@ -15,8 +38,11 @@ int main()
                 window.close();
         }
 
+        simulation.update();
+
+        //affichage du resultat
         window.clear();
-        window.draw(shape);
+        simulation.render(window);
         window.display();
     }
 
