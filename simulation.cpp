@@ -1,4 +1,5 @@
 #include "simulation.h"
+#include "boule.h"
 
 using namespace sf;
 using namespace std;
@@ -10,21 +11,37 @@ Simulation::Simulation() {
 	win_width = 1000;//default value, use updateWindow to change this value
 	win_height = 1000;
 
+	//graphic part
 	image.create(win_width, win_height, Color::Cyan);
 	texture.create(win_width, win_height);
 	texture.update(image);
 	sprite.setTexture(texture);
+
+
+	//Boule part
+	nbBoule = 10;
+	vector<Boule> boules;
 }
 
-void Simulation::print() {
+void Simulation::Init() {
+	boules.clear();
+	for (int i = 0; i < nbBoule; i++)
+	{
+		boules.push_back(Boule());
+		boules[i].Init(i);
+		boules[i].Update();
+	}
+}
+
+void Simulation::Print() {
 	cout << to_string(win_height) << endl;
 }
 
-void Simulation::update() {
-	show();
+void Simulation::Update() {
+	Show();
 }
 
-void Simulation::show() {
+void Simulation::Show() {
 	Color red;
 	red.r = 255;
 	Color green;
@@ -43,7 +60,7 @@ void Simulation::show() {
 	}
 }
 
-void Simulation::updateWindow(sf::RenderWindow& win) {
+void Simulation::UpdateWindow(sf::RenderWindow& win) {
 	win_width = win.getSize().x;
 	win_height = win.getSize().y;
 	image.create(win_width, win_height, Color::Black);
@@ -53,7 +70,7 @@ void Simulation::updateWindow(sf::RenderWindow& win) {
 }
 
 
-void Simulation::render(sf::RenderWindow& win) {
+void Simulation::Render(sf::RenderWindow& win) {
 
 	//creation de la texture par defaut
 	//image dans la texture

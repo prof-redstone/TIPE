@@ -12,22 +12,21 @@ using namespace std;
 Simulation simulation;
 
 //constantes
-const int WIN_WIDTH = 1000;//taille de la window
-const int WIN_HEIGHT = 1000;
+const int WIN_WIDTH = 500;//taille de la window
+const int WIN_HEIGHT = 500;
 
 int main()
 {
-    cout << "bonjour tout le monde " << endl;
+    cout << "------- TIPE SIMULATION ---------" << endl;
 
     RenderWindow window(VideoMode(WIN_WIDTH, WIN_HEIGHT, 32), "Fractal Generator");
     window.setTitle("Simulation TIPE");
     window.setKeyRepeatEnabled(false);//pour éviter les trucs bisard quand on utilise sur le clavier
-    //activation Vsinc
-    window.setVerticalSyncEnabled(true);
-    simulation.print();//fonction de test
+    window.setVerticalSyncEnabled(true);//activation Vsinc
 
-
-    simulation.updateWindow(window);//pour lui passer en parametre les parametre de la window, comme la taille.
+    
+    simulation.Init();//fonction de test
+    simulation.UpdateWindow(window);//pour lui passer en parametre les parametre de la window, comme la taille.
 
     while (window.isOpen())
     {
@@ -38,11 +37,11 @@ int main()
                 window.close();
         }
 
-        simulation.update();
+        simulation.Update();
 
         //affichage du resultat
         window.clear();
-        simulation.render(window);
+        simulation.Render(window);
         window.display();
     }
 

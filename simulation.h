@@ -1,10 +1,15 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
+#include "boule.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <vector>
 #include <cmath>
 #include <ctime>  //to initialize random
+
+
+using namespace sf;
+using namespace std;
 
 
 class Simulation {
@@ -18,18 +23,24 @@ public:
 	int win_width;//taille de la window
 	int win_height;
 
+	//pour les boules
+	int nbBoule;
+	vector<Boule> boules;
+
 	Simulation();
 
-	void print();
+	void Init();
 
-	void update();
+	void Print();
 
-	void show();
+	void Update();
 
-	void updateWindow(sf::RenderWindow& win);
+	void Show();
+
+	void UpdateWindow(sf::RenderWindow& win);
 
 
-	void render(sf::RenderWindow& win);
+	void Render(sf::RenderWindow& win);
 
 };
 

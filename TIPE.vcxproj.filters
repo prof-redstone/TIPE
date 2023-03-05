@@ -21,12 +21,18 @@
     <ClCompile Include="simulation.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="boule.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
       <Filter>Fichiers sources</Filter>
     </ClInclude>
     <ClInclude Include="simulation.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="boule.h">
       <Filter>Fichiers sources</Filter>
     </ClInclude>
   </ItemGroup>
