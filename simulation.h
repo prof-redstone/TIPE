@@ -41,6 +41,7 @@ public:
 
 
 	void Render(sf::RenderWindow& win);
+	void DrawBoule();
 
 };
 

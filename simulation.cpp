@@ -19,7 +19,7 @@ Simulation::Simulation() {
 
 
 	//Boule part
-	nbBoule = 10;
+	nbBoule = 1;
 	vector<Boule> boules;
 }
 
@@ -28,7 +28,7 @@ void Simulation::Init() {
 	for (int i = 0; i < nbBoule; i++)
 	{
 		boules.push_back(Boule());
-		boules[i].Init(i);
+		boules[i].Init(i, i * 50, 50);
 		boules[i].Update();
 	}
 }
@@ -42,22 +42,35 @@ void Simulation::Update() {
 }
 
 void Simulation::Show() {
-	Color red;
-	red.r = 255;
-	Color green;
-	green.g = 255;
-	for (int i = 0; i < win_width; i++) {
-		for (int j = 0; j < win_height; j++) {
-			if ((i + j) % 100 == 0) {
+	DrawBoule();
+}
 
-				image.setPixel(i, j, red);
-			}
-			if ((i - j) % 100 == 0) {
-
-				image.setPixel(i, j, green);
+void Simulation::DrawBoule() {
+	cout << "ici 1" << endl;
+	for (int i = 0; i < nbBoule; i++) { //indice de la boule
+		int x = 50;
+		int y = 50;
+		int size = 30;
+		for (int j = x - size; j < x + size; j++) {//coo x
+			for (int k = y - size; k < y + size; k++) { //coo y
+				double dist = sqrt( ((double)pow(j - x, 2)) + ((double)pow(k - y, 2)) );
+				if ((j >= 0 && j <= win_width) && (k >= 0 && k <= win_height)){
+					cout << to_string((double)size) << endl;
+					if (dist <= (double)size) {
+						Color red;
+						red.r = 255;
+						image.setPixel(j, k, red);
+					}
+					else {
+						Color black;
+						black.r = 255;
+						image.setPixel(j, k, black);
+					}
+				}
 			}
 		}
 	}
+	cout << "fini !" << endl;
 }
 
 void Simulation::UpdateWindow(sf::RenderWindow& win) {

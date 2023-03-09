@@ -19,7 +19,7 @@ public:
 	int index;
 
 	Boule();
-	void Init(int);
+	void Init(int ind, int x, int y);
 	void Update();
 };
 
