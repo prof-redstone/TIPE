@@ -6,23 +6,23 @@ using namespace std;
 
 
 Boule::Boule() {
-	double weight = 1;  
-	double size = 1;
-	double xpos = 0;
-	double ypos = 0;
-	double xspeed = 0;
-	double yspeed = 0;
-
-	int index = -1;
+	weight = 1;  
+	size = 10;
+	xpos = 0;
+	ypos = 0;
+	xspeed = 0;
+	yspeed = 0;
+	index = -1;
 }
 
-void Boule::Init(int ind, int x, int y) {
-	size = weight;
+void Boule::Init(int ind, int x, int y, double s) {
+	size = s;
 	index = ind;
 	xpos = x;
 	ypos = y;
 }
 
 void Boule::Update() {
+	
 
 }

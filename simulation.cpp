@@ -20,6 +20,7 @@ Simulation::Simulation() {
 
 	//Boule part
 	nbBoule = 1;
+	deltaTime = 0.01;
 	vector<Boule> boules;
 }
 
@@ -28,7 +29,7 @@ void Simulation::Init() {
 	for (int i = 0; i < nbBoule; i++)
 	{
 		boules.push_back(Boule());
-		boules[i].Init(i, i * 50, 50);
+		boules[i].Init(i, 50, 50, 10);
 		boules[i].Update();
 	}
 }
@@ -38,7 +39,15 @@ void Simulation::Print() {
 }
 
 void Simulation::Update() {
-	Show();
+	for (int i = 0; i < nbBoule; i++){
+		//Gravity Force 
+		//am=f donc a=f/m
+		double gravity = 1000;
+		double yf = gravity*boules[i].weight;//foce sur l'axe x
+		double yacc = yf / boules[i].weight; //acceleration sur l'axe x
+		boules[i].yspeed += yacc * deltaTime;
+		boules[i].ypos += boules[i].yspeed * deltaTime;
+	}
 }
 
 void Simulation::Show() {
@@ -46,31 +55,23 @@ void Simulation::Show() {
 }
 
 void Simulation::DrawBoule() {
-	cout << "ici 1" << endl;
 	for (int i = 0; i < nbBoule; i++) { //indice de la boule
-		int x = 50;
-		int y = 50;
-		int size = 30;
-		for (int j = x - size; j < x + size; j++) {//coo x
-			for (int k = y - size; k < y + size; k++) { //coo y
-				double dist = sqrt( ((double)pow(j - x, 2)) + ((double)pow(k - y, 2)) );
-				if ((j >= 0 && j <= win_width) && (k >= 0 && k <= win_height)){
-					cout << to_string((double)size) << endl;
-					if (dist <= (double)size) {
+		int x = (int)boules[i].xpos;
+		int y = (int)boules[i].ypos;
+		int r = (int)boules[i].size;
+		for (int j = x - r; j < x + r; j++) {
+			for (int k = y - r; k < y + r; k++) {
+				if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
+					double dist = sqrt(((double)pow(j - x, 2)) + ((double)pow(k - y, 2)));
+					if (dist <= (double)r) {
 						Color red;
 						red.r = 255;
 						image.setPixel(j, k, red);
-					}
-					else {
-						Color black;
-						black.r = 255;
-						image.setPixel(j, k, black);
 					}
 				}
 			}
 		}
 	}
-	cout << "fini !" << endl;
 }
 
 void Simulation::UpdateWindow(sf::RenderWindow& win) {

@@ -38,6 +38,7 @@ int main()
         }
 
         simulation.Update();
+        simulation.Show();
 
         //affichage du resultat
         window.clear();

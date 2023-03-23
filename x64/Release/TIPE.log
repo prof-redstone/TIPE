@@ -1,0 +1,5 @@
+﻿  boule.cpp
+  main.cpp
+  simulation.cpp
+simulation.obj : error LNK2001: symbole externe non résolu "public: void __cdecl Boule::Update(void)" (?Update@Boule@@QEAAXXZ)
+C:\Users\tomde\OneDrive\Bureau\TIPE\CPPProject\TIPE\x64\Release\TIPE.exe : fatal error LNK1120: 1 externes non résolus

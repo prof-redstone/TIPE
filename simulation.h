@@ -25,6 +25,7 @@ public:
 
 	//pour les boules
 	int nbBoule;
+	double deltaTime;
 	vector<Boule> boules;
 
 	Simulation();
