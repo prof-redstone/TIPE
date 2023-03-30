@@ -36,6 +36,11 @@ public:
 
 	void Update();
 
+	void ApplyForce();
+	void ResolveCollision();
+	void ResolveConstraint();
+	void UpdateSpeed();
+
 	void Show();
 
 	void UpdateWindow(sf::RenderWindow& win);
