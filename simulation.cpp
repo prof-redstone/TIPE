@@ -42,7 +42,7 @@ void Simulation::Update() {
 	for (int i = 0; i < nbBoule; i++){
 		//Gravity Force 
 		//am=f donc a=f/m
-		double gravity = 1000;
+		double gravity = 100;
 		double yf = gravity*boules[i].weight;//foce sur l'axe x
 		double yacc = yf / boules[i].weight; //acceleration sur l'axe x
 		boules[i].yspeed += yacc * deltaTime;
@@ -51,6 +51,18 @@ void Simulation::Update() {
 }
 
 void Simulation::Show() {
+	//clear screen
+	Color black;
+	black.g = 0;
+	black.r = 0;
+	black.b = 0;
+	for (int i = 0; i < win_width; i++){
+		for (int j = 0; j < win_height; j++) {
+			image.setPixel(i, j, black);
+		}
+	}
+
+
 	DrawBoule();
 }
 
