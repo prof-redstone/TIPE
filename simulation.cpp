@@ -20,8 +20,9 @@ Simulation::Simulation() {
 
 
 	//Boule part
-	nbBoule = 200;
-	deltaTime = 0.01;
+	nbBoule = 1;
+	deltaTime = 0.005;
+	time = 0;
 	vector < Boule > boules;
 }
 
@@ -30,12 +31,20 @@ void Simulation::Init() {
 	for (int i = 0; i < nbBoule; i++) {
 		boules.push_back(Boule());
 		boules[i].Init(i, 100 + 10*i, 100, 10);
-		boules[i].Update();
 	}
 }
 
 void Simulation::Print() {
 	cout << to_string(win_height) << endl;
+}
+
+
+void Simulation::AddBall() {
+	if (time % 20 == 0) {
+		boules.push_back(Boule());
+		boules[nbBoule].Init(nbBoule, 100, 100, 10);
+		nbBoule++;
+	}
 }
 
 void Simulation::Update() {
@@ -49,8 +58,8 @@ void Simulation::Update() {
 	ApplyForce();
 	ResolveConstraint();
 	ResolveCollision();
-	cout << boules[0].xpos << endl;
 	UpdateBall();
+	time++;
 }
 
 void Simulation::ApplyForce(){
@@ -146,14 +155,15 @@ void Simulation::DrawBoule() {
 		int x = (int) boules[i].xpos;
 		int y = (int) boules[i].ypos;
 		int r = (int) boules[i].size;
+		Color col;
+		col.r = boules[i].index %254;
+		col.g = (boules[i].index +100) % 254;
 		for (int j = x - r; j < x + r; j++) {
 			for (int k = y - r; k < y + r; k++) {
 				if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
 					double dist = sqrt(((double) pow(j - x, 2)) + ((double) pow(k - y, 2)));
 					if (dist <= (double) r) {
-						Color red;
-						red.r = 255;
-						image.setPixel(j, k, red);
+						image.setPixel(j, k, col);
 					}
 				}
 			}

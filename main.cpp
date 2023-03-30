@@ -38,6 +38,7 @@ int main()
         }
 
         simulation.Update();
+        simulation.AddBall();
         simulation.Show();
 
         //affichage du resultat

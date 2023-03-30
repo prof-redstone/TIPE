@@ -1,3 +1,3 @@
 ﻿  simulation.cpp
-C:\Users\tomde\OneDrive\Bureau\TIPE\CPPProject\TIPE\simulation.cpp(78,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
+C:\Users\tomde\OneDrive\Bureau\TIPE\CPPProject\TIPE\simulation.cpp(87,17): warning C4244: 'initialisation' : conversion de 'double' en 'float', perte possible de données
   TIPE.vcxproj -> C:\Users\tomde\OneDrive\Bureau\TIPE\CPPProject\TIPE\x64\Debug\TIPE.exe

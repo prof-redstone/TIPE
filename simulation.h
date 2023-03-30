@@ -28,6 +28,8 @@ public:
 	double deltaTime;
 	vector<Boule> boules;
 
+	int time;
+
 	Simulation();
 
 	void Init();
@@ -40,6 +42,7 @@ public:
 	void ResolveCollision();
 	void ResolveConstraint();
 	void UpdateBall();
+	void AddBall();
 
 	void Show();
 

@@ -7,7 +7,7 @@ using namespace std;
 
 Boule::Boule() {
 	weight = 1;  
-	size = 10;
+	size = 5;
 	xpos = 0;
 	ypos = 0;
 	xposLast = xpos;
