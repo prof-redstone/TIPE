@@ -39,7 +39,7 @@ public:
 	void ApplyForce();
 	void ResolveCollision();
 	void ResolveConstraint();
-	void UpdateSpeed();
+	void UpdateBall();
 
 	void Show();
 

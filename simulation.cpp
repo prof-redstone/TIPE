@@ -20,7 +20,7 @@ Simulation::Simulation() {
 
 
 	//Boule part
-	nbBoule = 1;
+	nbBoule = 200;
 	deltaTime = 0.01;
 	vector < Boule > boules;
 }
@@ -29,7 +29,7 @@ void Simulation::Init() {
 	boules.clear();
 	for (int i = 0; i < nbBoule; i++) {
 		boules.push_back(Boule());
-		boules[i].Init(i, 50, 50, 10);
+		boules[i].Init(i, 100 + 10*i, 100, 10);
 		boules[i].Update();
 	}
 }
@@ -48,7 +48,9 @@ void Simulation::Update() {
 	*/
 	ApplyForce();
 	ResolveConstraint();
-
+	ResolveCollision();
+	cout << boules[0].xpos << endl;
+	UpdateBall();
 }
 
 void Simulation::ApplyForce(){
@@ -58,13 +60,10 @@ void Simulation::ApplyForce(){
 		//am=f donc a=f/m
 		double gravity = 1000;
 		double yf = gravity * boules[i].weight; //foce sur l'axe x
-		double yacc = yf / boules[i].weight; //acceleration sur l'axe x
-		boules[i].yspeed += yacc * deltaTime;
-		boules[i].ypos += boules[i].yspeed * deltaTime;
+		boules[i].yacc = yf / boules[i].weight; //acceleration sur l'axe x
 	}
 }
 void Simulation::ResolveCollision(){
-	cout << "ici" << endl;
 	//check collision entre boulle -------a tester -------
 	const double repCoef = 0.75;
 	for (int i = 0; i < nbBoule; i++) { //onjet 1
@@ -94,7 +93,7 @@ void Simulation::ResolveCollision(){
 void Simulation::ResolveConstraint(){
 	//application des contrainte de mouvement :
 	//zone de mouvement : cercle de taille de la fenettre centre (win_width = radius)
-	double zoneRadius = win_width/2;
+	double zoneRadius = win_width/2 ;
 	for (int i = 0; i < nbBoule; i++) {
 		double distx = (win_width/2) -  boules[i].xpos;
 		double disty = (win_height/2) -  boules[i].ypos;
@@ -110,8 +109,20 @@ void Simulation::ResolveConstraint(){
 	}
 }
 
-void Simulation::UpdateSpeed(){
-	
+void Simulation::UpdateBall(){
+	for (int i = 0; i < nbBoule; i++){	
+		double distx = boules[i].xpos - boules[i].xposLast;
+		double disty = boules[i].ypos - boules[i].yposLast;
+		boules[i].xposLast = boules[i].xpos;
+		boules[i].yposLast = boules[i].ypos;
+		boules[i].xpos = boules[i].xpos + distx + boules[i].xacc * deltaTime * deltaTime;
+		boules[i].ypos = boules[i].ypos + disty + boules[i].yacc * deltaTime * deltaTime;
+
+
+
+		boules[i].ypos += boules[i].yspeed * deltaTime;
+		boules[i].xpos += boules[i].xspeed * deltaTime;
+	}
 }
 
 void Simulation::Show() {

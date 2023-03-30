@@ -14,8 +14,12 @@ public:
 	double size;
 	double xpos;
 	double ypos;
+	double xposLast;
+	double yposLast;
 	double xspeed;
 	double yspeed;
+	double xacc;
+	double yacc;
 	int index;
 
 	Boule();
