@@ -7,13 +7,11 @@ using namespace std;
 
 Boule::Boule() {
 	weight = 1;  
-	size = 5;
+	size = 10;
 	xpos = 0;
 	ypos = 0;
 	xposLast = xpos;
 	yposLast = ypos;
-	xspeed = 0;
-	yspeed = 0;
 	xacc = 0;
 	yacc = 0;
 	index = -1;
@@ -29,6 +27,9 @@ void Boule::Init(int ind, int x, int y, double s) {
 }
 
 void Boule::Update() {
-	
+}
 
+void Boule::AddSpeed(double speedx, double speedy, double dt) {
+	xposLast = xpos - speedx*dt;
+	yposLast = ypos - speedy*dt;
 }

@@ -12,8 +12,8 @@ using namespace std;
 Simulation simulation;
 
 //constantes
-const int WIN_WIDTH = 500;//taille de la window
-const int WIN_HEIGHT = 500;
+const int WIN_WIDTH = 700;//taille de la window
+const int WIN_HEIGHT = 700;
 
 int main()
 {
@@ -25,8 +25,8 @@ int main()
     window.setVerticalSyncEnabled(true);//activation Vsinc
 
     
-    simulation.Init();//fonction de test
-    simulation.UpdateWindow(window);//pour lui passer en parametre les parametre de la window, comme la taille.
+    simulation.Init(0.003);//fonction de test
+    simulation.UpdateWindow(window);//pour lui passer en parametre les parametres de la window, comme la taille.
 
     while (window.isOpen())
     {
@@ -37,6 +37,7 @@ int main()
                 window.close();
         }
 
+        simulation.Update();
         simulation.Update();
         simulation.AddBall();
         simulation.Show();

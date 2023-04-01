@@ -32,7 +32,7 @@ public:
 
 	Simulation();
 
-	void Init();
+	void Init(double dt);
 
 	void Print();
 
@@ -50,6 +50,7 @@ public:
 
 
 	void Render(sf::RenderWindow& win);
+	sf::Color HSLtoRGB(double hueI, double const satI, double const darkI, double const alphaI);
 	void DrawBoule();
 
 };

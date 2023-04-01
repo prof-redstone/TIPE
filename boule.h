@@ -14,10 +14,8 @@ public:
 	double size;
 	double xpos;
 	double ypos;
-	double xposLast;
+	double xposLast; //pas de variable vitesse, on la calcule en faisant la difference entre pos et poslast (pour des raison pratique)
 	double yposLast;
-	double xspeed;
-	double yspeed;
 	double xacc;
 	double yacc;
 	int index;
@@ -25,6 +23,7 @@ public:
 	Boule();
 	void Init(int ind, int x, int y, double s);
 	void Update();
+	void AddSpeed(double speedx, double speedy, double dt);
 };
 
 

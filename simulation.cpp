@@ -20,13 +20,14 @@ Simulation::Simulation() {
 
 
 	//Boule part
-	nbBoule = 1;
-	deltaTime = 0.005;
+	deltaTime = 0.005;//par defaut (a changer dans le Init)
 	time = 0;
 	vector < Boule > boules;
 }
 
-void Simulation::Init() {
+void Simulation::Init(double dt) {
+	deltaTime = dt;
+	nbBoule = 1;
 	boules.clear();
 	for (int i = 0; i < nbBoule; i++) {
 		boules.push_back(Boule());
@@ -42,14 +43,14 @@ void Simulation::Print() {
 void Simulation::AddBall() {
 	if (time % 20 == 0) {
 		boules.push_back(Boule());
-		boules[nbBoule].Init(nbBoule, 100, 100, 10);
+		boules[nbBoule].Init(nbBoule, 100, 200, 10);
+		boules[nbBoule].AddSpeed(0, 1000, deltaTime);
 		nbBoule++;
 	}
 }
 
 void Simulation::Update() {
-	//ordre exection des etapes :
-	/*
+	/*	ordre exection des etapes :
 		1)gravity
 		2)check collision
 		3)faire les contrainte de collision, bordure piece en mouvement dans le future
@@ -73,7 +74,7 @@ void Simulation::ApplyForce(){
 	}
 }
 void Simulation::ResolveCollision(){
-	//check collision entre boulle -------a tester -------
+	//check collision entre les boulles
 	const double repCoef = 0.75;
 	for (int i = 0; i < nbBoule; i++) { //onjet 1
 		for (int j = i + 1; j < nbBoule; j++) { // objet 2 different de objet 1, pour faire une paire
@@ -128,9 +129,6 @@ void Simulation::UpdateBall(){
 		boules[i].ypos = boules[i].ypos + disty + boules[i].yacc * deltaTime * deltaTime;
 
 
-
-		boules[i].ypos += boules[i].yspeed * deltaTime;
-		boules[i].xpos += boules[i].xspeed * deltaTime;
 	}
 }
 
@@ -155,9 +153,7 @@ void Simulation::DrawBoule() {
 		int x = (int) boules[i].xpos;
 		int y = (int) boules[i].ypos;
 		int r = (int) boules[i].size;
-		Color col;
-		col.r = boules[i].index %254;
-		col.g = (boules[i].index +100) % 254;
+		Color col = HSLtoRGB(((double)boules[i].index) / 50.0, 0.1, 1, 1);
 		for (int j = x - r; j < x + r; j++) {
 			for (int k = y - r; k < y + r; k++) {
 				if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
@@ -193,4 +189,47 @@ void Simulation::Render(sf::RenderWindow & win) {
 
 	win.draw(sprite);
 
+}
+
+sf::Color Simulation::HSLtoRGB(double hueI, double const satI, double const darkI, double const alphaI)
+{
+	//hue : 0 : red  1 : yellow  2 : green  3 : cyan  4 : blue  5 : purple  6 : red
+	//hue  0 == 6   6 is one cycle rotation
+	//saturation [0;1]
+	//darkness [0;1]
+	//alpha [0;1]
+
+	double red = 0;
+	double green = 0;
+	double blue = 0;
+	double hue = fmod(hueI, 6);
+
+	if (hue >= 0 && hue < 1) {
+		red = 255; green = hue * 255; blue = 0;
+	}
+	else if (hue >= 1 && hue < 2) {
+		green = 255; red = 255 - ((hue - 1) * 255); blue = 0;
+	}
+	else if (hue >= 2 && hue < 3) {
+		green = 255; blue = (hue - 2) * 255; red = 0;
+	}
+	else if (hue >= 3 && hue < 4) {
+		blue = 255; green = 255 - ((hue - 3) * 255); red = 0;
+	}
+	else if (hue >= 4 && hue < 5) {
+		blue = 255; red = (hue - 4) * 255; green = 0;
+	}
+	else if (hue >= 5 && hue < 6) {
+		red = 255; blue = 255 - ((hue - 5) * 255); green = 0;
+	}
+
+	red = red + (255 - red) * satI;
+	green = green + (255 - green) * satI;
+	blue = blue + (255 - blue) * satI;
+
+	red = red * darkI;
+	green = green * darkI;
+	blue = blue * darkI;
+
+	return Color(static_cast<Uint8>(red), static_cast<Uint8>(green), static_cast<Uint8>(blue), static_cast<Uint8>(alphaI * 255));
 }
