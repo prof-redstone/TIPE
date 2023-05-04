@@ -141,12 +141,14 @@
   <ItemGroup>
     <ClCompile Include="boule.cpp" />
     <ClCompile Include="brasseur.cpp" />
+    <ClCompile Include="func.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="simulation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="boule.h" />
     <ClInclude Include="brasseur.h" />
+    <ClInclude Include="func.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="simulation.h" />
   </ItemGroup>

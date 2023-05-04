@@ -26,7 +26,7 @@ int main()
 
     
     simulation.UpdateWindow(window);//pour lui passer en parametre les parametres de la window, comme la taille.
-    simulation.Init(0.003, 1);//fonction de test
+    simulation.Init(0.001, 16, 0.5);//fonction de test
 
     while (window.isOpen())
     {
@@ -38,7 +38,7 @@ int main()
         }
 
         simulation.Update();
-        simulation.AddBall();
+        //simulation.AddBall();
 
         //affichage du resultat
         simulation.Render(window);

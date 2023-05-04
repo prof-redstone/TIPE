@@ -27,6 +27,9 @@
     <ClCompile Include="brasseur.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="func.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -39,6 +42,9 @@
       <Filter>Fichiers sources</Filter>
     </ClInclude>
     <ClInclude Include="brasseur.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="func.h">
       <Filter>Fichiers sources</Filter>
     </ClInclude>
   </ItemGroup>

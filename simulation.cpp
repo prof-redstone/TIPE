@@ -1,5 +1,6 @@
 #include "simulation.h"
 
+#include "func.h"
 #include "boule.h"
 #include "brasseur.h"
 
@@ -32,21 +33,41 @@ Simulation::Simulation() {
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
-void Simulation::Init(double dt, int nbB) {
+void Simulation::Init(double dt, int taille, double noise) {
 	deltaTime = dt;
 
 	//pour generer les boules au début de la simulation
-	nbBoule = nbB;
+	//generation en forme de triangle de taille taille
+	double Bsize = 10;
+	double Bmarge = 5; //minimum 1px d'espace entre les boules pour eviter pb de colision
+	double centerX = win_width / 2;
+	double centerY = win_height / 2 - (taille /2)*(Bmarge + Bsize*2);
 	boules.clear();
-	for (int i = 0; i < nbBoule; i++) {
-		boules.push_back(Boule());
-		boules[i].Init(i, 100 + 10*i, 100, 10);
+	nbBoule = 0;
+	for (int t = taille; t > 0; t--){
+		for (int i = 0; i < t; i++) {
+			boules.push_back(Boule());
+			boules[nbBoule].Init(nbBoule, centerX + ((Bsize*2 + Bmarge) * i) - ((Bsize*2 + Bmarge)*0.5*t), t * (Bsize*2 + Bmarge)*0.87 + centerY, Bsize);
+			nbBoule++;
+		}
 	}
+
+
+	//bruit dans le placement des boules
+	int seed = 1;
+	for (int i = 0; i < nbBoule; i++)
+	{
+		cout << rnd(1, i) << endl;
+	}
+
+	cout << "Nombre de boules : " + to_string(nbBoule) << endl;
+	cout << "Noise factor : " + to_string(noise) << endl;
+
 
 	//pour generer les brasseur, taille position et rayon
 	nbBrasseur = 5;
-	double sizeBrasseur = 30; // rayon du brasseur
-	double speedBrasseur = 0.002; //la vitesse de rotation des brasseurs
+	double sizeBrasseur = 10; // rayon du brasseur
+	double speedBrasseur = 0.7*dt; //la vitesse de rotation des brasseurs
 	for (int i = 0; i < nbBrasseur; i++){
 		brasseurs.push_back(Brasseur()) ;
 		double angsec = (2 * 3.1415) / nbBrasseur;
@@ -57,9 +78,9 @@ void Simulation::Init(double dt, int nbB) {
 
 
 void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au début du prog pour initialiser la taille de la fenettre, ou en cours pour redimmentionner la fenettre
-	cout << "UpdateWindow" << endl;
 	win_width = win.getSize().x;
 	win_height = win.getSize().y;
+	cout << "UpdateWindow : " + to_string(win_width) + "px " + to_string(win_height) + "px " << endl;
 	Color LayerColor = Color(0, 0, 0, 0);
 	image.create(win_width, win_height, LayerColor);
 	BGimg.create(win_width, win_height, LayerColor);
@@ -124,7 +145,7 @@ void Simulation::ApplyForce(){
 void Simulation::ResolveCollision(){
 	//check collision entre les boulles
 	const double repCoef = 0.75;
-	for (int i = 0; i < nbBoule; i++) { //onjet 1
+	for (int i = 0; i < nbBoule; i++) { //objet 1
 		for (int j = i + 1; j < nbBoule; j++) { // objet 2 different de objet 1, pour faire une paire
 			double distx = boules[i].xpos - boules[j].xpos;
 			double disty = boules[i].ypos - boules[j].ypos;
