@@ -7,7 +7,7 @@
 
 using namespace std;
 
-
+int PRNG(int seed, int index);
 double rnd(int seed, int i);
 
 #endif

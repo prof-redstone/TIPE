@@ -33,12 +33,12 @@ Simulation::Simulation() {
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
-void Simulation::Init(double dt, int taille, double noise) {
+void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed) {
 	deltaTime = dt;
+	nbBrasseur = nbbras;
 
 	//pour generer les boules au début de la simulation
 	//generation en forme de triangle de taille taille
-	double Bsize = 10;
 	double Bmarge = 5; //minimum 1px d'espace entre les boules pour eviter pb de colision
 	double centerX = win_width / 2;
 	double centerY = win_height / 2 - (taille /2)*(Bmarge + Bsize*2);
@@ -47,27 +47,21 @@ void Simulation::Init(double dt, int taille, double noise) {
 	for (int t = taille; t > 0; t--){
 		for (int i = 0; i < t; i++) {
 			boules.push_back(Boule());
-			boules[nbBoule].Init(nbBoule, centerX + ((Bsize*2 + Bmarge) * i) - ((Bsize*2 + Bmarge)*0.5*t), t * (Bsize*2 + Bmarge)*0.87 + centerY, Bsize);
+			//bruit dans le placement des boules
+			double xnoise = rnd(seed, i)*noise;
+			double ynoise = rnd(seed + 1, i)*noise;
+			boules[nbBoule].Init(nbBoule, centerX + ((Bsize*2 + Bmarge) * i) - ((Bsize*2 + Bmarge)*0.5*t) + xnoise, t * (Bsize*2 + Bmarge)*0.87 + centerY + ynoise, Bsize);
 			nbBoule++;
 		}
 	}
 
 
-	//bruit dans le placement des boules
-	int seed = 1;
-	for (int i = 0; i < nbBoule; i++)
-	{
-		cout << rnd(1, i) << endl;
-	}
 
-	cout << "Nombre de boules : " + to_string(nbBoule) << endl;
-	cout << "Noise factor : " + to_string(noise) << endl;
 
 
 	//pour generer les brasseur, taille position et rayon
-	nbBrasseur = 5;
-	double sizeBrasseur = 10; // rayon du brasseur
-	double speedBrasseur = 0.7*dt; //la vitesse de rotation des brasseurs
+	double sizeBrasseur = brasSize; // rayon du brasseur
+	double speedBrasseur = brasSpeed*dt; //la vitesse de rotation des brasseurs
 	for (int i = 0; i < nbBrasseur; i++){
 		brasseurs.push_back(Brasseur()) ;
 		double angsec = (2 * 3.1415) / nbBrasseur;

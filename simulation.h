@@ -44,7 +44,7 @@ public:
 
 	Simulation();
 
-	void Init(double dt, int taille, double noise);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
+	void Init(double dt, int taille, double Bsize, double noise, int seed, int nbbras, double brasSize, double brasSpeed);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
 
 
 	void Update();//fonction principale
