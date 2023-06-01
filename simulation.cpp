@@ -74,7 +74,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au début du prog pour initialiser la taille de la fenettre, ou en cours pour redimmentionner la fenettre
 	win_width = win.getSize().x;
 	win_height = win.getSize().y;
-	cout << "UpdateWindow : " + to_string(win_width) + "px " + to_string(win_height) + "px " << endl;
+	//cout << "UpdateWindow : " + to_string(win_width) + "px " + to_string(win_height) + "px " << endl;
 	Color LayerColor = Color(0, 0, 0, 0);
 	image.create(win_width, win_height, LayerColor);
 	BGimg.create(win_width, win_height, LayerColor);
@@ -222,7 +222,7 @@ void Simulation::DrawBoule() { //pour afficher les boules une par une sur l'imag
 		int x = (int) boules[i].xpos;
 		int y = (int) boules[i].ypos;
 		int r = (int) boules[i].size;
-		Color col = HSLtoRGB(((double)boules[i].index) / 50.0, 0.1, 1, 1);
+		Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.1, 1, 1);
 		for (int j = x - r; j < x + r; j++) {
 			for (int k = y - r; k < y + r; k++) {
 				if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {

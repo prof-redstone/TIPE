@@ -15,26 +15,30 @@ Simulation simulation;
 const int WIN_WIDTH = 800;//taille de la window
 const int WIN_HEIGHT = 800;
 const double dt = 0.0005; //delta time pourune boucle de simulation
-const int nbBoule = 18; //nombre triagulaire de boule dans la simulation, 15 max
+const int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
 const double noise = 3; //quantite de bruit dans le positionnement des boules a l'etat initial
-const int nbFrameSkip = 7; //réduis le nombre d'image ce qui accelere la simulation
-const double bouleSize = 10; //rayon de la taille des boules en pixel dans la simulation 
-const int nbBrasseur = 5; 
-const double brasseurSize = 10; //rayon de la taille des brasseurs en pixel dans la simulation 
-const double brasseurSpeed = 0.9; //vitesse de rotation des brasseurs en rad/frame
+const int nbFrameSkip = 8; //réduis le nombre d'image ce qui accelere la simulation
+const double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation 
+const int nbBrasseur = 40; 
+const double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation 
+const double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame
 const int seed = 3; //seed pour la position des balles
 
-int main(){
-    cout << "------- TIPE SIMULATION ---------" << endl;
-    cout << "Delta Time : " + to_string(dt) << endl;
+void main(int argc, char* argv[]){
+    cout << "Nombre de parametre : " + to_string(argc) << endl;
+    for (int i = 0; i < argc; i++){
+        cout << "param " + to_string(i) + " : " << argv[i] << endl;
+    }
+    cout << "Delta Time : " + to_string(dt) << endl; //devra etre fixe
     cout << "Nombre de boules : " + to_string(nbBoule) << endl;
-    cout << "taille boules : " + to_string(bouleSize) << endl;
-    cout << "seed for noise : " + to_string(seed) << endl;
+    cout << "Taille boules : " + to_string(bouleSize) << endl; //devra etre fixe
+    cout << "Seed for noise : " + to_string(seed) << endl;
     cout << "Noise factor : " + to_string(noise) << endl;
-    cout << "Nombre brasseur :" + to_string(nbBrasseur) << endl;
-    cout << "Brasseur speed : " + to_string(brasseurSpeed) << endl;
-    cout << "Brasseur size : " + to_string(brasseurSize) << endl;
-    cout << "Nombre frame skip :" + to_string(nbFrameSkip) << endl;
+    cout << "Nombre brasseur : " + to_string(nbBrasseur) << endl; //devra etre fixe
+    cout << "Brasseur speed : " + to_string(brasseurSpeed) << endl; //devra etre fixe
+    cout << "Brasseur size : " + to_string(brasseurSize) << endl; //devra etre fixe
+    cout << "Square size : " + to_string(WIN_WIDTH) << endl; //devra etre fixe
+    cout << "Nombre frame skip :" + to_string(nbFrameSkip) << endl; //devra etre fixe
 
     RenderWindow window(VideoMode(WIN_WIDTH, WIN_HEIGHT, 32), "TIPE SIMULATION");
     window.setTitle("Simulation TIPE");
@@ -62,5 +66,7 @@ int main(){
         simulation.Render(window);
     }
 
-    return 0;
+    cout << "Result : " << to_string(5) << endl;
+
+    return ;
 }
