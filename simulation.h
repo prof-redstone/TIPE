@@ -46,6 +46,8 @@ public:
 	int nbTirage;
 	double timebtwTirage;
 	vector <int> resTirage;
+	int detectorX;
+	int detectorY;
 
 
 	Simulation();
@@ -73,6 +75,7 @@ public:
 	void Render(sf::RenderWindow& win);
 	void DrawBoule();
 	void DrawBrasseur();
+	void DrawDetector();
 	sf::Color HSLtoRGB(double hueI, double const satI, double const darkI, double const alphaI);
 
 };

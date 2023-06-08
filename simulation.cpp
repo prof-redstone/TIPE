@@ -37,6 +37,9 @@ Simulation::Simulation() {
 	nbTirage = 0;
 	timebtwTirage = 1000; //change de le INIT
 	vector <int> resTirage;
+	detectorX = win_width / 2;
+	detectorY = win_height;
+
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
@@ -88,7 +91,10 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au début du prog pour initialiser la taille de la fenettre, ou en cours pour redimmentionner la fenettre
 	win_width = win.getSize().x;
 	win_height = win.getSize().y;
-	//cout << "UpdateWindow : " + to_string(win_width) + "px " + to_string(win_height) + "px " << endl;
+
+	detectorX = win_width / 2;
+	detectorY = win_height - 10;
+
 	Color LayerColor = Color(0, 0, 0, 0);
 	image.create(win_width, win_height, LayerColor);
 	BGimg.create(win_width, win_height, LayerColor);
@@ -154,13 +160,13 @@ void Simulation::Tirage() {
 }
 
 int Simulation::Detector() {
-	int xpos = win_width/2;
-	int ypos = win_height;
 	int indexMin = 0;
 	double distMin = (double)100000000000000; //max double
 	for (int i = 0; i < nbBoule; i++)
 	{
-		double dist = sqrt(boules[i].xpos * boules[i].xpos + boules[i].ypos * boules[i].ypos);
+		double distX = boules[i].xpos - detectorX;
+		double disty = boules[i].ypos - detectorY;
+		double dist = sqrt(distX*distX + disty*disty);
 		if (dist < distMin) {
 			distMin = dist;
 			indexMin = i;
@@ -269,7 +275,14 @@ void Simulation::DrawBoule() { //pour afficher les boules une par une sur l'imag
 		int x = (int) boules[i].xpos;
 		int y = (int) boules[i].ypos;
 		int r = (int) boules[i].size;
-		Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.1, 1, 1);
+		Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.8, 1, 1);
+		for (int j = 0; j < nbTirage; j++)
+		{
+			if (resTirage[j] == i) {
+				col = HSLtoRGB(((double)boules[i].index) / 8.0, 0, 1, 1);
+
+			}
+		}
 		for (int j = x - r; j < x + r; j++) {
 			for (int k = y - r; k < y + r; k++) {
 				if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
@@ -302,6 +315,25 @@ void Simulation::DrawBrasseur() {
 	}
 }
 
+void Simulation::DrawDetector() {
+	int x = detectorX;
+	int y = detectorY;
+	int r = 10;
+
+	Color col = Color(250, 0, 0);
+	for (int j = x - r; j < x + r; j++) {
+		for (int k = y - r; k < y + r; k++) {
+			if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
+				double dist = sqrt(((double)pow(j - x, 2)) + ((double)pow(k - y, 2)));
+				if (dist <= (double)r) {
+					image.setPixel(j, k, col);
+				}
+			}
+		}
+	}
+
+}
+
 
 
 void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour afficher le gb et les boules.
@@ -318,6 +350,7 @@ void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour a
 
 		DrawBoule();
 		DrawBrasseur();
+		DrawDetector();
 
 		//creation de la texture par defaut
 		//image dans la texture
