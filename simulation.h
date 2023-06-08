@@ -28,6 +28,7 @@ public:
 	int win_width;//taille de la window
 	int win_height;
 	int nbFrameSkip = 2;
+	bool finish;
 
 	double deltaTime;
 	int time;//incremente de 1 dans Update
@@ -41,10 +42,15 @@ public:
 	int nbBrasseur;
 	vector<Brasseur> brasseurs;
 
+	//pour le tirage
+	int nbTirage;
+	double timebtwTirage;
+	vector <int> resTirage;
+
 
 	Simulation();
 
-	void Init(double dt, int taille, double Bsize, double noise, int seed, int nbbras, double brasSize, double brasSpeed);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
+	void Init(double dt, int taille, double Bsize, double noise, int seed, int nbbras, double brasSize, double brasSpeed, int nbTirage, double timebtwTirage);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
 
 
 	void Update();//fonction principale
@@ -55,6 +61,9 @@ public:
 	void ResolveConstraint();	
 	void UpdateBall();
 	void AddBall();
+
+	void Tirage();
+	int Detector();
 
 	void UpdateBrasseur();
 

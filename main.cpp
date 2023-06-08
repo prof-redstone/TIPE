@@ -12,17 +12,19 @@ using namespace std;
 Simulation simulation;
 
 //constantes
-const int WIN_WIDTH = 800;//taille de la window
-const int WIN_HEIGHT = 800;
-const double dt = 0.0005; //delta time pourune boucle de simulation
-const int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
-const double noise = 3; //quantite de bruit dans le positionnement des boules a l'etat initial
-const int nbFrameSkip = 8; //réduis le nombre d'image ce qui accelere la simulation
-const double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation 
-const int nbBrasseur = 40; 
-const double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation 
-const double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame
-const int seed = 3; //seed pour la position des balles
+int WIN_WIDTH = 800;//taille de la window
+int WIN_HEIGHT = 800;
+double dt = 0.001; //delta time pourune boucle de simulation 0.0005
+int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
+double noise = 3; //quantite de bruit dans le positionnement des boules a l'etat initial
+int nbFrameSkip = 10; //réduis le nombre d'image ce qui accelere la simulation
+double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation 
+int nbBrasseur = 40; 
+double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation 
+double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame
+int seed = 4; //seed pour la position des balles
+int nbTirage = 5;
+double timebtwTirage = 500; //unite random
 
 void main(int argc, char* argv[]){
     cout << "Nombre de parametre : " + to_string(argc) << endl;
@@ -47,9 +49,9 @@ void main(int argc, char* argv[]){
 
     
     simulation.UpdateWindow(window);//pour lui passer en parametre les parametres de la window, comme la taille.
-    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed);//fonction de test
+    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage);//fonction de test
 
-    while (window.isOpen())
+    while (window.isOpen() && !simulation.finish)
     {
         sf::Event event;
         while (window.pollEvent(event))
@@ -66,7 +68,17 @@ void main(int argc, char* argv[]){
         simulation.Render(window);
     }
 
-    cout << "Result : " << to_string(5) << endl;
+    //affichage du resultat dans la console
+    cout << "Result : [";
+    for (int i = 0; i < nbTirage; i++)
+    {
+        cout << to_string(simulation.resTirage[i]);
+        if (i < nbTirage - 1) {
+            cout << ",";
+        }
+    }
+    cout << "]";
+    cout << endl;
 
     return ;
 }

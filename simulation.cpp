@@ -14,6 +14,8 @@ Simulation::Simulation() {
 	win_width = 1000; //default value, use updateWindow to change this value
 	win_height = 1000;
 
+	finish = false;
+
 	//graphic part
 	image.create(win_width, win_height, Color::Cyan);
 	texture.create(win_width, win_height);
@@ -30,13 +32,25 @@ Simulation::Simulation() {
 
 	nbBrasseur = 0; //changera dans Init
 	vector < Brasseur > brasseurs;
+
+	//pour le tirage
+	nbTirage = 0;
+	timebtwTirage = 1000; //change de le INIT
+	vector <int> resTirage;
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
-void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed) {
+void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir) {
 	deltaTime = dt;
 	nbBrasseur = nbbras;
+	nbTirage = nbTir;
+	timebtwTirage = timebtwTir;
+	finish = false;
 
+	//pour mettre les résultats
+	for (int i = 0; i < nbTirage; i++){
+		resTirage.push_back(-1); //-1 = pas de valeur
+	}
 	//pour generer les boules au début de la simulation
 	//generation en forme de triangle de taille taille
 	double Bmarge = 5; //minimum 1px d'espace entre les boules pour eviter pb de colision
@@ -119,7 +133,40 @@ void Simulation::Update() {
 	ResolveConstraint();
 	ResolveCollision();
 	UpdateBall();
+
+	Tirage();
 	time++;
+}
+
+void Simulation::Tirage() {
+	int i = (int)floor((time * deltaTime * 100) / timebtwTirage);
+	if (i < nbTirage) {
+		if (resTirage[i] == -1) {
+			int res = Detector();
+			//cout << "On tire " + to_string(res) << endl;
+			resTirage[i] = res;
+		}
+	}
+	else {
+		finish = true;
+	}
+
+}
+
+int Simulation::Detector() {
+	int xpos = win_width/2;
+	int ypos = win_height;
+	int indexMin = 0;
+	double distMin = (double)100000000000000; //max double
+	for (int i = 0; i < nbBoule; i++)
+	{
+		double dist = sqrt(boules[i].xpos * boules[i].xpos + boules[i].ypos * boules[i].ypos);
+		if (dist < distMin) {
+			distMin = dist;
+			indexMin = i;
+		}
+	}
+	return indexMin;
 }
 
 //appliquer les différente force du systeme sur les balles
