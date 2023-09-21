@@ -2,6 +2,7 @@
 #include <iostream> //pour ecrire dans la console.
 #include <vector> //pour les tableau dynamique
 #include <cmath> //pour tous les modules de math
+#include <ctime>
 #include "main.h"
 #include "simulation.h"
 
@@ -16,13 +17,13 @@ int WIN_WIDTH = 800;//taille de la window
 int WIN_HEIGHT = 800;
 double dt = 0.001; //delta time pourune boucle de simulation 0.0005
 int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
-double noise = 3; //quantite de bruit dans le positionnement des boules a l'etat initial
+double noise = 0.1; //quantite de bruit dans le positionnement des boules a l'etat initial
 int nbFrameSkip = 10; //réduis le nombre d'image ce qui accelere la simulation
 double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation 
 int nbBrasseur = 40; 
 double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation 
 double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame
-int seed = 6; //seed pour la position des balles
+int seed = 2; //seed pour la position des balles
 int nbTirage = 5;
 double timebtwTirage = 500; //unite random
 
@@ -32,13 +33,15 @@ void main(int argc, char* argv[]){
     getParam(argc, argv);
 
     RenderWindow window(VideoMode(WIN_WIDTH, WIN_HEIGHT, 32), "TIPE SIMULATION");
-    window.setTitle("Simulation TIPE");
+    window.setTitle("Simulation TIPE Tom Demagny");
     window.setKeyRepeatEnabled(false);//pour éviter les trucs bisard quand on utilise sur le clavier
     window.setVerticalSyncEnabled(true);//activation Vsinc
 
     
     simulation.UpdateWindow(window);//pour lui passer en parametre les parametres de la window, comme la taille.
     simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage);//fonction de test
+
+
 
     while (window.isOpen() && !simulation.finish)
     {
@@ -54,7 +57,9 @@ void main(int argc, char* argv[]){
         }
 
         //affichage du resultat
+        simulation.Update();
         simulation.Render(window);
+        
     }
 
     //affichage du resultat dans la console

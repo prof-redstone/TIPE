@@ -44,6 +44,7 @@ public:
 
 	//pour le tirage
 	int nbTirage;
+	int nbTirageFait;
 	double timebtwTirage;
 	vector <int> resTirage;
 	int detectorX;

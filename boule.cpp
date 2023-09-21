@@ -15,6 +15,7 @@ Boule::Boule() {
 	xacc = 0;
 	yacc = 0;
 	index = -1;
+	tire = false;
 }
 
 void Boule::Init(int ind, int x, int y, double s) {
@@ -24,6 +25,7 @@ void Boule::Init(int ind, int x, int y, double s) {
 	ypos = y;
 	xposLast = xpos;
 	yposLast = ypos;
+	tire = false;
 }
 
 void Boule::Update() {

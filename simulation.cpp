@@ -3,6 +3,7 @@
 #include "func.h"
 #include "boule.h"
 #include "brasseur.h"
+#include <chrono>
 
 using namespace sf;
 using namespace std;
@@ -34,7 +35,8 @@ Simulation::Simulation() {
 	vector < Brasseur > brasseurs;
 
 	//pour le tirage
-	nbTirage = 0;
+	nbTirage = 0; //nombre total de tirage a faire
+	nbTirageFait = 0; //pour garder le nombre de tirage deja execute 
 	timebtwTirage = 1000; //change de le INIT
 	vector <int> resTirage;
 	detectorX = win_width / 2;
@@ -54,6 +56,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 	for (int i = 0; i < nbTirage; i++){
 		resTirage.push_back(-1); //-1 = pas de valeur
 	}
+
 	//pour generer les boules au début de la simulation
 	//generation en forme de triangle de taille taille
 	double Bmarge = 5; //minimum 1px d'espace entre les boules pour eviter pb de colision
@@ -61,8 +64,8 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 	double centerY = win_height / 2 - (taille /2)*(Bmarge + Bsize*2);
 	boules.clear();
 	nbBoule = 0;
-	for (int t = taille; t > 0; t--){
-		for (int i = 0; i < t; i++) {
+	for (int t = taille; t >= 0; t--){
+		for (int i = 0; i <= t; i++) {
 			boules.push_back(Boule());
 			//bruit dans le placement des boules
 			double xnoise = rnd(seed, i)*noise;
@@ -75,8 +78,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 
 
 
-
-	//pour generer les brasseur, taille position et rayon
+	//pour generer les brasseurs, taille position et rayon
 	double sizeBrasseur = brasSize; // rayon du brasseur
 	double speedBrasseur = brasSpeed*dt; //la vitesse de rotation des brasseurs
 	for (int i = 0; i < nbBrasseur; i++){
@@ -115,15 +117,6 @@ void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au déb
 	}
 }
 
-//debug, fait apparaitre des balles pendant la simulation, à retirer lors des experiences finals
-void Simulation::AddBall() {
-	if (time % 20 == 0) {
-		boules.push_back(Boule());
-		boules[nbBoule].Init(nbBoule, 100, 200, 10);
-		boules[nbBoule].AddSpeed(0, 1000, deltaTime);
-		nbBoule++;
-	}
-}
 
 //main function of program, call at each frame
 void Simulation::Update() {
@@ -139,35 +132,79 @@ void Simulation::Update() {
 	ResolveConstraint();
 	ResolveCollision();
 	UpdateBall();
+	
+
+	// Récupère le temps actuel
+	auto now = std::chrono::system_clock::now();
+
+	// Convertit le temps en seconde
+	std::chrono::duration<double> duration = now.time_since_epoch();
+
+	// Convertit le temps en centièmes de seconde
+	std::chrono::duration<double, std::ratio<1, 100>> hundredths = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1, 100>>>(duration);
+
+	// Convertit le nombre en chaîne de caractères
+	std::string hundredths_string = std::to_string(hundredths.count());
+
+	// Affiche le temps
+	std::cout << "Le temps actuel est : " << hundredths_string << " centièmes de seconde" << std::endl;
+
 
 	Tirage();
 	time++;
 }
 
 void Simulation::Tirage() {
-	int i = (int)floor((time * deltaTime * 100) / timebtwTirage);
+
+	if (nbTirageFait < nbTirage) {
+		float temps = (time * deltaTime * 100) / timebtwTirage;
+		if (temps > nbTirageFait + 1) {
+			int i = (int)floor(temps)-1;
+
+			if (resTirage[i] == -1) {
+				int res = Detector();
+				if (res != -1) {//si il y a plus de boule
+					boules[res].tire = true;
+				}
+				resTirage[i] = res;
+				nbTirageFait++;
+			}
+		}
+	}else {
+		finish = true;
+	}
+
+
+	/*int i = (int)floor((time * deltaTime * 100) / timebtwTirage);
+	cout << to_string(i) << endl;
 	if (i < nbTirage) {
-		if (resTirage[i] == -1) {
-			int res = Detector();
-			//cout << "On tire " + to_string(res) << endl;
-			resTirage[i] = res;
+		if (i != 0) {
+
+			if (resTirage[i] == -1) {
+				int res = Detector();
+				if (res != -1) {//si il y a plus de boule
+					boules[res].tire = true;
+				}
+				resTirage[i] = res;
+				nbTirageFait++;
+			}
 		}
 	}
 	else {
 		finish = true;
-	}
+	}*/
 
 }
 
 int Simulation::Detector() {
-	int indexMin = 0;
+	int indexMin = -1;//-1 si y'a plus de boule
 	double distMin = (double)100000000000000; //max double
 	for (int i = 0; i < nbBoule; i++)
 	{
 		double distX = boules[i].xpos - detectorX;
 		double disty = boules[i].ypos - detectorY;
 		double dist = sqrt(distX*distX + disty*disty);
-		if (dist < distMin) {
+		if (dist < distMin && boules[i].tire==false) {//pour pas retirer la meme
 			distMin = dist;
 			indexMin = i;
 		}
@@ -200,7 +237,7 @@ void Simulation::ResolveCollision(){
 			double distmin = boules[i].size + boules[j].size;
 
 			//wheck overlapping
-			if (dist2 < distmin * distmin) {
+			if (dist2 < distmin * distmin && boules[i].tire == false && boules[j].tire == false) {
 				float dist1 = sqrt(dist2);
 				//nb sous-step :
 				const double nx = distx / dist1;
@@ -272,27 +309,29 @@ void Simulation::UpdateBrasseur() {
 
 void Simulation::DrawBoule() { //pour afficher les boules une par une sur l'image
 	for (int i = 0; i < nbBoule; i++) { //indice de la boule
-		int x = (int) boules[i].xpos;
-		int y = (int) boules[i].ypos;
-		int r = (int) boules[i].size;
-		Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.8, 1, 1);
-		for (int j = 0; j < nbTirage; j++)
-		{
-			if (resTirage[j] == i) {
-				col = HSLtoRGB(((double)boules[i].index) / 8.0, 0, 1, 1);
+		if (boules[i].tire == false) { //on affiche pas les boules deja tire
+			int x = (int)boules[i].xpos;
+			int y = (int)boules[i].ypos;
+			int r = (int)boules[i].size;
+			Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.1, 1, 1);
+			for (int j = 0; j < nbTirage; j++)
+			{
+				if (resTirage[j] == i) {
+					col = HSLtoRGB(((double)boules[i].index) / 8.0, 0, 0.1, 0.0);
 
+				}
 			}
-		}
-		for (int j = x - r; j < x + r; j++) {
-			for (int k = y - r; k < y + r; k++) {
-				if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
-					double dist = sqrt(((double) pow(j - x, 2)) + ((double) pow(k - y, 2)));
-					if (dist <= (double) r) {
-						image.setPixel(j, k, col);
+			for (int j = x - r; j < x + r; j++) {
+				for (int k = y - r; k < y + r; k++) {
+					if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
+						double dist = sqrt(((double)pow(j - x, 2)) + ((double)pow(k - y, 2)));
+						if (dist <= (double)r) {
+							image.setPixel(j, k, col);
+						}
 					}
 				}
 			}
-		}
+		}		
 	}
 }
 

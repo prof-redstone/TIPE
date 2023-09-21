@@ -19,6 +19,7 @@ public:
 	double xacc;
 	double yacc;
 	int index;
+	bool tire;
 
 	Boule();
 	void Init(int ind, int x, int y, double s);
