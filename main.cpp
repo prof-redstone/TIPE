@@ -2,7 +2,7 @@
 #include <iostream> //pour ecrire dans la console.
 #include <vector> //pour les tableau dynamique
 #include <cmath> //pour tous les modules de math
-#include <ctime>
+#include <chrono>
 #include "main.h"
 #include "simulation.h"
 
@@ -17,8 +17,8 @@ int WIN_WIDTH = 800;//taille de la window
 int WIN_HEIGHT = 800;
 double dt = 0.001; //delta time pourune boucle de simulation 0.0005
 int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
-double noise = 0.1; //quantite de bruit dans le positionnement des boules a l'etat initial
-int nbFrameSkip = 10; //réduis le nombre d'image ce qui accelere la simulation
+double noise = 0.9; //quantite de bruit dans le positionnement des boules a l'etat initial
+int nbFrameSkip = 100; //réduis le nombre d'image ce qui accelere la simulation
 double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation 
 int nbBrasseur = 40; 
 double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation 
@@ -28,9 +28,14 @@ int nbTirage = 5;
 double timebtwTirage = 500; //unite random
 
 void getParam(int argc, char* argv[]);//y'a pas de .h
+double GetPreciseTime();
 
 void main(int argc, char* argv[]){
     getParam(argc, argv);
+    double time = GetPreciseTime();
+    cout << time << endl;
+    //seed = (floor(time*1000));
+    cout << seed << endl;
 
     RenderWindow window(VideoMode(WIN_WIDTH, WIN_HEIGHT, 32), "TIPE SIMULATION");
     window.setTitle("Simulation TIPE Tom Demagny");
@@ -129,4 +134,28 @@ void getParam(int argc, char* argv[]) {
     cout << "Nombre frame skip :" + to_string(nbFrameSkip) << endl; //devra etre fixe
     cout << "Nombre tirage : " + to_string(nbTirage) << endl;
     cout << "intervalle tirage : " + to_string(timebtwTirage) << endl;
+}
+
+double GetPreciseTime() {
+
+    // Récupère le temps actuel
+    auto now = std::chrono::system_clock::now();
+
+    // Convertit le temps en seconde
+    std::chrono::duration<double> duration = now.time_since_epoch();
+
+    // Convertit le temps en centièmes de seconde
+    std::chrono::duration<double, std::ratio<1, 1>> hundredths = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1, 1>>>(duration);
+
+    // Convertit le nombre en chaîne de caractères
+    std::string hundredths_string = std::to_string(hundredths.count());
+
+
+    // Convertit la chaîne de caractères en nombre double
+    double hundredths_double = std::stod(hundredths_string.c_str());
+
+    // Affiche le temps
+    //std::cout << "Le temps actuel est : " << hundredths_string << " centièmes de seconde" << std::endl;
+
+    return hundredths_double;
 }

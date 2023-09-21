@@ -3,7 +3,7 @@
 #include "func.h"
 #include "boule.h"
 #include "brasseur.h"
-#include <chrono>
+#include <chrono>//pour le getTime precise
 
 using namespace sf;
 using namespace std;
@@ -135,19 +135,19 @@ void Simulation::Update() {
 	
 
 	// Récupère le temps actuel
-	auto now = std::chrono::system_clock::now();
+	//auto now = std::chrono::system_clock::now();
 
 	// Convertit le temps en seconde
-	std::chrono::duration<double> duration = now.time_since_epoch();
+	//std::chrono::duration<double> duration = now.time_since_epoch();
 
 	// Convertit le temps en centièmes de seconde
-	std::chrono::duration<double, std::ratio<1, 100>> hundredths = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1, 100>>>(duration);
+	//std::chrono::duration<double, std::ratio<1, 1>> hundredths = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1, 1>>>(duration);
 
 	// Convertit le nombre en chaîne de caractères
-	std::string hundredths_string = std::to_string(hundredths.count());
+	//std::string hundredths_string = std::to_string(hundredths.count());
 
 	// Affiche le temps
-	std::cout << "Le temps actuel est : " << hundredths_string << " centièmes de seconde" << std::endl;
+	//std::cout << "Le temps actuel est : " << hundredths_string << " centièmes de seconde" << std::endl;
 
 
 	Tirage();
