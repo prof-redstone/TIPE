@@ -27,3 +27,14 @@ double rnd(int seed, int index) {
     int res = PRNG(seed, index) % 10000;
     return ((double)res) / 10000;
 }
+
+void shuffle(vector <int> tab, int n,int seed) {
+    for (int i = 0; i < n; i++) {
+        cout << " ON SUFFLE LE TABLEAU D'INDICE" << endl;
+        int j = rnd(seed,i)* (n - i);
+        int temp = tab[i];
+        tab[i] = tab[j];
+        tab[j] = temp;
+        cout << j << endl;
+    }
+}

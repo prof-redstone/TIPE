@@ -9,5 +9,6 @@ using namespace std;
 
 int PRNG(int seed, int index);
 double rnd(int seed, int i);
+void shuffle(vector <int> tab, int n, int seed);
 
 #endif

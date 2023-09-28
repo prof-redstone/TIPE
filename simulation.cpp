@@ -30,9 +30,11 @@ Simulation::Simulation() {
 	time = 0;
 	nbBoule = 0; //changera dans Init
 	vector < Boule > boules;
+	vector <int> boulesCol;
 
 	nbBrasseur = 0; //changera dans Init
 	vector < Brasseur > brasseurs;
+	rotate = false;
 
 	//pour le tirage
 	nbTirage = 0; //nombre total de tirage a faire
@@ -51,6 +53,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 	nbTirage = nbTir;
 	timebtwTirage = timebtwTir;
 	finish = false;
+	rotate = false;
 
 	//pour mettre les résultats
 	for (int i = 0; i < nbTirage; i++){
@@ -71,20 +74,23 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 			double xnoise = rnd(seed, i)*noise;
 			double ynoise = rnd(seed + 1, i)*noise;
 			boules[nbBoule].Init(nbBoule, centerX + ((Bsize*2 + Bmarge) * i) - ((Bsize*2 + Bmarge)*0.5*t) + xnoise, t * (Bsize*2 + Bmarge)*0.87 + centerY + ynoise, Bsize);
+			boulesCol.push_back(nbBoule);
 			nbBoule++;
+			
 		}
 	}
 
-
+	shuffle(boulesCol, nbBoule - 1, seed);
 
 
 	//pour generer les brasseurs, taille position et rayon
 	double sizeBrasseur = brasSize; // rayon du brasseur
 	double speedBrasseur = brasSpeed*dt; //la vitesse de rotation des brasseurs
+	double angInitRnd = rnd(seed, 1)* (2 * 3.1415);
 	for (int i = 0; i < nbBrasseur; i++){
 		brasseurs.push_back(Brasseur()) ;
 		double angsec = (2 * 3.1415) / nbBrasseur;
-		brasseurs[i].Init(i * angsec, (win_width/2)-sizeBrasseur, sizeBrasseur, speedBrasseur, win_width / 2, win_height / 2);
+		brasseurs[i].Init(i * angsec + angInitRnd, (win_width/2)-sizeBrasseur, sizeBrasseur, speedBrasseur, win_width / 2, win_height / 2);
 	}
 
 }
@@ -120,7 +126,14 @@ void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au déb
 
 //main function of program, call at each frame
 void Simulation::Update() {
-	UpdateBrasseur();
+	if (rotate) {
+		UpdateBrasseur();
+	}
+	//cout << time << endl;
+	if (time > 2000) {
+		rotate = true;
+	}
+
 	//pour les balles :
 	/*	ordre exection des etapes :
 		1)gravity
@@ -132,23 +145,6 @@ void Simulation::Update() {
 	ResolveConstraint();
 	ResolveCollision();
 	UpdateBall();
-	
-
-	// Récupère le temps actuel
-	//auto now = std::chrono::system_clock::now();
-
-	// Convertit le temps en seconde
-	//std::chrono::duration<double> duration = now.time_since_epoch();
-
-	// Convertit le temps en centièmes de seconde
-	//std::chrono::duration<double, std::ratio<1, 1>> hundredths = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1, 1>>>(duration);
-
-	// Convertit le nombre en chaîne de caractères
-	//std::string hundredths_string = std::to_string(hundredths.count());
-
-	// Affiche le temps
-	//std::cout << "Le temps actuel est : " << hundredths_string << " centièmes de seconde" << std::endl;
-
 
 	Tirage();
 	time++;
@@ -173,27 +169,6 @@ void Simulation::Tirage() {
 	}else {
 		finish = true;
 	}
-
-
-	/*int i = (int)floor((time * deltaTime * 100) / timebtwTirage);
-	cout << to_string(i) << endl;
-	if (i < nbTirage) {
-		if (i != 0) {
-
-			if (resTirage[i] == -1) {
-				int res = Detector();
-				if (res != -1) {//si il y a plus de boule
-					boules[res].tire = true;
-				}
-				resTirage[i] = res;
-				nbTirageFait++;
-			}
-		}
-	}
-	else {
-		finish = true;
-	}*/
-
 }
 
 int Simulation::Detector() {
@@ -313,7 +288,8 @@ void Simulation::DrawBoule() { //pour afficher les boules une par une sur l'imag
 			int x = (int)boules[i].xpos;
 			int y = (int)boules[i].ypos;
 			int r = (int)boules[i].size;
-			Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.1, 1, 1);
+			//Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.1, 1, 1);
+			Color col = HSLtoRGB(((double)boulesCol[i]) / 8.0, 0.1, 1, 1);
 			for (int j = 0; j < nbTirage; j++)
 			{
 				if (resTirage[j] == i) {

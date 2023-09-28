@@ -2,7 +2,9 @@
 #include <iostream> //pour ecrire dans la console.
 #include <vector> //pour les tableau dynamique
 #include <cmath> //pour tous les modules de math
-#include <chrono>
+#include <chrono> //pour avoir le temps pour la fonction aléatoire
+#include <ctime>  //pour avoir le temps pour la fonction aléatoire
+
 #include "main.h"
 #include "simulation.h"
 
@@ -18,12 +20,12 @@ int WIN_HEIGHT = 800;
 double dt = 0.001; //delta time pourune boucle de simulation 0.0005
 int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
 double noise = 0.9; //quantite de bruit dans le positionnement des boules a l'etat initial
-int nbFrameSkip = 100; //réduis le nombre d'image ce qui accelere la simulation
+int nbFrameSkip = 10; //réduis le nombre d'image ce qui accelere la simulation
 double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation 
 int nbBrasseur = 40; 
 double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation 
 double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame
-int seed = 2; //seed pour la position des balles
+__int64 seed = 2; //seed pour la position des balles
 int nbTirage = 5;
 double timebtwTirage = 500; //unite random
 
@@ -31,11 +33,10 @@ void getParam(int argc, char* argv[]);//y'a pas de .h
 double GetPreciseTime();
 
 void main(int argc, char* argv[]){
-    getParam(argc, argv);
     double time = GetPreciseTime();
-    cout << time << endl;
-    //seed = (floor(time*1000));
-    cout << seed << endl;
+    seed = (__int64)(time);
+    cout << "seed with millis : " << seed << endl;
+    getParam(argc, argv);
 
     RenderWindow window(VideoMode(WIN_WIDTH, WIN_HEIGHT, 32), "TIPE SIMULATION");
     window.setTitle("Simulation TIPE Tom Demagny");
@@ -148,14 +149,15 @@ double GetPreciseTime() {
     std::chrono::duration<double, std::ratio<1, 1>> hundredths = std::chrono::duration_cast<std::chrono::duration<double, std::ratio<1, 1>>>(duration);
 
     // Convertit le nombre en chaîne de caractères
-    std::string hundredths_string = std::to_string(hundredths.count());
+    std::string secChar = std::to_string(hundredths.count());
 
 
     // Convertit la chaîne de caractères en nombre double
-    double hundredths_double = std::stod(hundredths_string.c_str());
+    double hundredths_double = std::stod(secChar.c_str());
+    double millis = hundredths_double*1000.;
 
     // Affiche le temps
-    //std::cout << "Le temps actuel est : " << hundredths_string << " centièmes de seconde" << std::endl;
-
-    return hundredths_double;
+    //std::cout << "Le temps actuel est : " << secChar << " seconde" << std::endl;
+    //std::cout << "Le temps actuel est : " << millis << " seconde" << std::endl;
+    return millis;
 }

@@ -36,11 +36,13 @@ public:
 	//pour les boules
 	int nbBoule;
 	vector<Boule> boules;
+	vector <int> boulesCol;
 
 
 	//pour les brasseurs
 	int nbBrasseur;
 	vector<Brasseur> brasseurs;
+	bool rotate;
 
 	//pour le tirage
 	int nbTirage;
