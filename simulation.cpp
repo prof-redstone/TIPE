@@ -80,7 +80,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 		}
 	}
 
-	boulesCol = shuffle(boulesCol, nbBoule - 1, seed);
+	boulesCol = shuffle(boulesCol, nbBoule , seed);
 
 
 	//pour generer les brasseurs, taille position et rayon
