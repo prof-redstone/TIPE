@@ -134,6 +134,9 @@ void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au déb
 			}
 		}
 	}
+	BGtext.create(win_width, win_height);
+	BGtext.update(BGimg);
+	BGsprt.setTexture(BGtext, false);
 }
 
 
@@ -361,6 +364,32 @@ void Simulation::DrawDetector() {
 
 }
 
+void Simulation::DrawTimer() {
+	int xs = win_width*0.85;
+	int ys = 30;
+
+	int x = win_width/2 - xs/2;
+	int y = win_height/2 - ys / 2;
+
+	double pourcentage = (time * deltaTime) / timeBeforStart;
+
+	if (pourcentage > 1.) {
+		return;
+	}
+
+	xs *= 1-pourcentage;
+
+	Color col = Color(250*(1-pourcentage), 250 * pourcentage, 0);
+	for (int j = x; j < x + xs; j++) {
+		for (int k = y; k < y + ys; k++) {
+			if ((j >= 0 && j < win_width) && (k >= 0 && k < win_height)) {
+				image.setPixel(j, k, col);
+			}
+		}
+	}
+
+}
+
 void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour afficher le gb et les boules.
 	if (time % (nbFrameSkip+1) == 0) {//pour economiser les performances 
 
@@ -376,17 +405,15 @@ void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour a
 		DrawBoule();
 		DrawBrasseur();
 		DrawDetector();
+		DrawTimer();
 
 		//creation de la texture par defaut
 		//image dans la texture
 		texture.create(win_width, win_height);
 		texture.update(image);
-		BGtext.create(win_width, win_height);
-		BGtext.update(BGimg);
 
 		//texture dans le sprite
 		sprite.setTexture(texture, false);
-		BGsprt.setTexture(BGtext, false);
 
 
 		win.draw(BGsprt);

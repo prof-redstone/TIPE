@@ -82,6 +82,7 @@ public:
 	void DrawBoule();
 	void DrawBrasseur();
 	void DrawDetector();
+	void DrawTimer();
 	sf::Color HSLtoRGB(double hueI, double const satI, double const darkI, double const alphaI);
 
 };
