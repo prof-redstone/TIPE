@@ -31,6 +31,7 @@ public:
 	bool finish;
 	bool brasseurRNDpos;
 	bool bouleRNDpos;
+	double timeBeforStart;
 
 	double deltaTime;
 	int time;//incremente de 1 dans Update
@@ -57,7 +58,7 @@ public:
 
 	Simulation();
 
-	void Init(double dt, int taille, double Bsize, double noise, int seed, int nbbras, double brasSize, double brasSpeed, int nbTirage, double timebtwTirage, bool brasseurRNDpos, bool bouleRNDpos);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
+	void Init(double dt, int taille, double Bsize, double noise, int seed, int nbbras, double brasSize, double brasSpeed, int nbTirage, double timebtwTirage, double itimeBeforStart, bool brasseurRNDpos, bool bouleRNDpos);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
 
 
 	void Update();//fonction principale

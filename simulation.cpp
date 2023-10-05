@@ -27,7 +27,7 @@ Simulation::Simulation() {
 	//Boule part
 	deltaTime = 0.005;//par defaut (a changer dans le Init)
 	nbFrameSkip = 3;
-	time = 0;
+	time = 0;//augmente de 1 a chaque update
 	brasseurRNDpos = false;
 	bouleRNDpos = false;
 	nbBoule = 0; //changera dans Init
@@ -42,6 +42,7 @@ Simulation::Simulation() {
 	nbTirage = 0; //nombre total de tirage a faire
 	nbTirageFait = 0; //pour garder le nombre de tirage deja execute 
 	timebtwTirage = 1000; //change de le INIT
+	timeBeforStart = 1000;
 	vector <int> resTirage;
 	detectorX = win_width / 2;
 	detectorY = win_height;
@@ -49,7 +50,7 @@ Simulation::Simulation() {
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
-void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir,bool ibrasseurRNDpos, bool ibouleRNDpos) {
+void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir, double itimeBeforStart,bool ibrasseurRNDpos, bool ibouleRNDpos) {
 	deltaTime = dt;
 	nbBrasseur = nbbras;
 	nbTirage = nbTir;
@@ -58,6 +59,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 	rotate = false;
 	brasseurRNDpos = ibrasseurRNDpos;
 	bouleRNDpos = ibouleRNDpos;
+	timeBeforStart = itimeBeforStart;
 
 
 	//pour mettre les résultats
@@ -84,7 +86,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 		}
 	}
 
-	if (bouleRNDpos) {
+	if (bouleRNDpos) {//on melange les positions des boules
 		boules = shuffle(boules, nbBoule , seed);
 	}
 
@@ -93,7 +95,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 	double sizeBrasseur = brasSize; // rayon du brasseur
 	double speedBrasseur = brasSpeed*dt; //la vitesse de rotation des brasseurs
 	double angInitRnd = 0;
-	if (brasseurRNDpos) {
+	if (brasseurRNDpos) {//la postion de depart est random, 0 sinon
 		angInitRnd = rnd(seed, 1) * (2 * 3.1415);
 	}
 	for (int i = 0; i < nbBrasseur; i++){
@@ -141,7 +143,7 @@ void Simulation::Update() {
 		UpdateBrasseur();
 	}
 	//cout << time << endl;
-	if (time > 2000) {//a partir de ce temps la roue se met à tourner
+	if (time*deltaTime > timeBeforStart) {//a partir de ce temps la roue se met à tourner
 		rotate = true;
 	}
 
@@ -164,9 +166,9 @@ void Simulation::Update() {
 void Simulation::Tirage() {
 
 	if (nbTirageFait < nbTirage) {
-		float temps = (time * deltaTime * 100) / timebtwTirage;
-		if (temps > nbTirageFait + 1) {
-			int i = (int)floor(temps)-1;
+		float step = ((time * deltaTime) - timeBeforStart) / timebtwTirage;
+		if (step > nbTirageFait + 1) {
+			int i = (int)floor(step)-1;
 
 			if (resTirage[i] == -1) {
 				int res = Detector();
@@ -358,8 +360,6 @@ void Simulation::DrawDetector() {
 	}
 
 }
-
-
 
 void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour afficher le gb et les boules.
 	if (time % (nbFrameSkip+1) == 0) {//pour economiser les performances 

@@ -17,8 +17,8 @@ Simulation simulation;
 //constantes
 int WIN_WIDTH = 800;//taille de la window 800*800
 int WIN_HEIGHT = 800;
-int nbFrameSkip = 40; //réduis le nombre d'image ce qui accelere la simulation
-double dt = 0.001; //delta time pourune boucle de simulation 0.0005
+int nbFrameSkip = 50; //réduis le nombre d'image ce qui accelere la simulation
+double dt = 0.0005; //delta time pourune boucle de simulation 0.0005
 int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
 double noise = 0.0; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
 double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation //30
@@ -27,7 +27,8 @@ double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la si
 double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
 __int64 seed = 2; //seed pour la position des balles
 int nbTirage = 5;
-double timebtwTirage = 500; //unite random
+double timebtwTirage = 5; //unite seconde un peu proportionnelle
+double timeBeforStart = 10;
 bool brasseurRNDpos = false;
 bool bouleRNDpos = true;
 
@@ -47,7 +48,7 @@ void main(int argc, char* argv[]){
 
     
     simulation.UpdateWindow(window);//pour lui passer en parametre les parametres de la window, comme la taille.
-    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage, brasseurRNDpos, bouleRNDpos);//fonction de test
+    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage, timeBeforStart, brasseurRNDpos, bouleRNDpos);//fonction de test
 
 
 
@@ -87,9 +88,6 @@ void main(int argc, char* argv[]){
 
 void getParam(int argc, char* argv[]) {
 
-    //cout << "Nombre de parametre : " + to_string(argc) << endl;
-
-
     for (int i = 1; i < argc-1; i++) {//-1 pour faire +1 
         //cout << "param " + to_string(i) + " : " << argv[i] << endl;
         if (strcmp(argv[i], "seed") == 0) {
@@ -123,6 +121,15 @@ void getParam(int argc, char* argv[]) {
             WIN_WIDTH = stoi(argv[i + 1]);
             WIN_HEIGHT = stoi(argv[i + 1]);
         }
+        if (strcmp(argv[i], "RNDBoulePos") == 0) {
+            bouleRNDpos = stoi(argv[i + 1]);
+        }
+        if (strcmp(argv[i], "RNDbrassPos") == 0) {
+            brasseurRNDpos = stoi(argv[i + 1]);
+        }
+        if (strcmp(argv[i], "timeBeforStart") == 0) {
+            timeBeforStart = stoi(argv[i + 1]);
+        }
     }
 
     cout << "Delta Time : " + to_string(dt) << endl; //devra etre fixe
@@ -136,7 +143,10 @@ void getParam(int argc, char* argv[]) {
     cout << "Square size : " + to_string(WIN_WIDTH) << endl; //devra etre fixe
     cout << "Nombre frame skip :" + to_string(nbFrameSkip) << endl; //devra etre fixe
     cout << "Nombre tirage : " + to_string(nbTirage) << endl;
-    cout << "intervalle tirage : " + to_string(timebtwTirage) << endl;
+    cout << "Intervalle tirage : " + to_string(timebtwTirage) << endl;
+    cout << "Temps avant debut : " + to_string(timeBeforStart) << endl;
+    cout << "Position RND boules : " + to_string(bouleRNDpos) << endl;
+    cout << "Position RND brasseur : " + to_string(brasseurRNDpos) << endl;
 }
 
 double GetPreciseTime() {
