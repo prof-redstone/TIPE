@@ -28,9 +28,11 @@ Simulation::Simulation() {
 	deltaTime = 0.005;//par defaut (a changer dans le Init)
 	nbFrameSkip = 3;
 	time = 0;
+	brasseurRNDpos = false;
+	bouleRNDpos = false;
 	nbBoule = 0; //changera dans Init
 	vector < Boule > boules;
-	vector <int> boulesCol;
+
 
 	nbBrasseur = 0; //changera dans Init
 	vector < Brasseur > brasseurs;
@@ -47,13 +49,16 @@ Simulation::Simulation() {
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
-void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir) {
+void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir,bool ibrasseurRNDpos, bool ibouleRNDpos) {
 	deltaTime = dt;
 	nbBrasseur = nbbras;
 	nbTirage = nbTir;
 	timebtwTirage = timebtwTir;
 	finish = false;
 	rotate = false;
+	brasseurRNDpos = ibrasseurRNDpos;
+	bouleRNDpos = ibouleRNDpos;
+
 
 	//pour mettre les résultats
 	for (int i = 0; i < nbTirage; i++){
@@ -74,19 +79,23 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 			double xnoise = rnd(seed, i)*noise;
 			double ynoise = rnd(seed + 1, i)*noise;
 			boules[nbBoule].Init(nbBoule, centerX + ((Bsize*2 + Bmarge) * i) - ((Bsize*2 + Bmarge)*0.5*t) + xnoise, t * (Bsize*2 + Bmarge)*0.87 + centerY + ynoise, Bsize);
-			boulesCol.push_back(nbBoule);
 			nbBoule++;
 			
 		}
 	}
 
-	boulesCol = shuffle(boulesCol, nbBoule , seed);
+	if (bouleRNDpos) {
+		boules = shuffle(boules, nbBoule , seed);
+	}
 
 
 	//pour generer les brasseurs, taille position et rayon
 	double sizeBrasseur = brasSize; // rayon du brasseur
 	double speedBrasseur = brasSpeed*dt; //la vitesse de rotation des brasseurs
-	double angInitRnd = rnd(seed, 1)* (2 * 3.1415);
+	double angInitRnd = 0;
+	if (brasseurRNDpos) {
+		angInitRnd = rnd(seed, 1) * (2 * 3.1415);
+	}
 	for (int i = 0; i < nbBrasseur; i++){
 		brasseurs.push_back(Brasseur()) ;
 		double angsec = (2 * 3.1415) / nbBrasseur;
@@ -107,6 +116,8 @@ void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au déb
 	image.create(win_width, win_height, LayerColor);
 	BGimg.create(win_width, win_height, LayerColor);
 	sprite.setTexture(texture, true);
+
+	//loadFont();
 
 	//create the circle background 
 	Color bg = Color(0, 0, 0);
@@ -130,12 +141,12 @@ void Simulation::Update() {
 		UpdateBrasseur();
 	}
 	//cout << time << endl;
-	if (time > 2000) {
+	if (time > 2000) {//a partir de ce temps la roue se met à tourner
 		rotate = true;
 	}
 
-	//pour les balles :
-	/*	ordre exection des etapes :
+	/*pour les balles :
+		ordre exection des etapes :
 		1)gravity
 		2)check collision
 		3)faire les contrainte de collision, bordure, brasseur
@@ -288,8 +299,7 @@ void Simulation::DrawBoule() { //pour afficher les boules une par une sur l'imag
 			int x = (int)boules[i].xpos;
 			int y = (int)boules[i].ypos;
 			int r = (int)boules[i].size;
-			//Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.1, 1, 1);
-			Color col = HSLtoRGB(((double)boulesCol[i]) / 8.0, 0.1, 1, 1);
+			Color col = HSLtoRGB(((double)boules[i].index) / 8.0, 0.1, 1, 1);
 			for (int j = 0; j < nbTirage; j++)
 			{
 				if (resTirage[j] == i) {

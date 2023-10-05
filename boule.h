@@ -23,7 +23,7 @@ public:
 
 	Boule();
 	void Init(int ind, int x, int y, double s);
-	void Update();
+	void ResetSpeed();
 	void AddSpeed(double speedx, double speedy, double dt);
 };
 

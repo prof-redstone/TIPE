@@ -15,19 +15,21 @@ using namespace std;
 Simulation simulation;
 
 //constantes
-int WIN_WIDTH = 800;//taille de la window
+int WIN_WIDTH = 800;//taille de la window 800*800
 int WIN_HEIGHT = 800;
+int nbFrameSkip = 40; //réduis le nombre d'image ce qui accelere la simulation
 double dt = 0.001; //delta time pourune boucle de simulation 0.0005
 int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
-double noise = 0.9; //quantite de bruit dans le positionnement des boules a l'etat initial
-int nbFrameSkip = 10; //réduis le nombre d'image ce qui accelere la simulation
-double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation 
-int nbBrasseur = 40; 
-double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation 
-double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame
+double noise = 0.0; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
+double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation //30
+int nbBrasseur = 40; //40
+double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation //12
+double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
 __int64 seed = 2; //seed pour la position des balles
 int nbTirage = 5;
 double timebtwTirage = 500; //unite random
+bool brasseurRNDpos = false;
+bool bouleRNDpos = true;
 
 void getParam(int argc, char* argv[]);//y'a pas de .h
 double GetPreciseTime();
@@ -45,7 +47,7 @@ void main(int argc, char* argv[]){
 
     
     simulation.UpdateWindow(window);//pour lui passer en parametre les parametres de la window, comme la taille.
-    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage);//fonction de test
+    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage, brasseurRNDpos, bouleRNDpos);//fonction de test
 
 
 

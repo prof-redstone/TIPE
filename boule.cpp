@@ -28,7 +28,9 @@ void Boule::Init(int ind, int x, int y, double s) {
 	tire = false;
 }
 
-void Boule::Update() {
+void Boule::ResetSpeed() {//pour eviter les pb quand on TP des boules
+	xposLast = xpos;
+	yposLast = ypos;
 }
 
 void Boule::AddSpeed(double speedx, double speedy, double dt) {
