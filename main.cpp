@@ -17,7 +17,7 @@ Simulation simulation;
 //constantes
 int WIN_WIDTH = 800;//taille de la window 800*800
 int WIN_HEIGHT = 800;
-int nbFrameSkip = 20; //réduis le nombre d'image ce qui accelere la simulation
+int nbFrameSkip = 15; //réduis le nombre d'image ce qui accelere la simulation
 double dt = 0.0005; //delta time pourune boucle de simulation 0.0005
 int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max
 double noise = 0.5; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
@@ -28,7 +28,7 @@ double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0
 __int64 seed = 2; //seed pour la position des balles
 int nbTirage = 40;
 double timebtwTirage = 5; //unite seconde un peu proportionnelle
-double timeBeforStart = 5;
+double timeBeforStart = 7;
 bool brasseurRNDpos = true;
 bool bouleRNDpos = true;
 
