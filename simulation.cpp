@@ -145,7 +145,6 @@ void Simulation::Update() {
 	if (rotate) {
 		UpdateBrasseur();
 	}
-	//cout << time << endl;
 	if (time*deltaTime > timeBeforStart) {//a partir de ce temps la roue se met à tourner
 		rotate = true;
 	}
@@ -158,8 +157,8 @@ void Simulation::Update() {
 		4)update la position
 	*/
 	ApplyForce();
-	ResolveConstraint();
-	ResolveCollision();
+	ResolveCollision2(); //boule a element fixe
+	ResolveConstraint(); //boule a boule
 	UpdateBall();
 
 	Tirage();
@@ -219,17 +218,17 @@ void Simulation::ApplyForce(){
 //ce qui fait que ça fonctionne, pour gerer les collisions avec les différentes balles
 void Simulation::ResolveCollision(){
 	//check collision entre les boulles
-	const double repCoef = 0.75;
+	const double repCoef = 0.75; //0.75
 	for (int i = 0; i < nbBoule; i++) { //objet 1
 		for (int j = i + 1; j < nbBoule; j++) { // objet 2 different de objet 1, pour faire une paire
 			double distx = boules[i].xpos - boules[j].xpos;
 			double disty = boules[i].ypos - boules[j].ypos;
-			double dist2 = distx * distx + disty * disty;
-			double distmin = boules[i].size + boules[j].size;
+			double dist2 = distx * distx + disty * disty; //pour opti
+			double distmin = boules[i].size + boules[j].size; 
 
-			//wheck overlapping
+			//check overlapping, and existance
 			if (dist2 < distmin * distmin && boules[i].tire == false && boules[j].tire == false) {
-				float dist1 = sqrt(dist2);
+				double dist1 = sqrt(dist2);
 				//nb sous-step :
 				const double nx = distx / dist1;
 				const double ny = disty / dist1;
@@ -244,9 +243,40 @@ void Simulation::ResolveCollision(){
 		}
 	}
 }
+
+void Simulation::ResolveCollision2() {
+	const double bounceRate = 1.;
+	for (int i = 0; i < nbBoule; i++) { //objet 1
+		for (int j = i + 1; j < nbBoule; j++) { // objet 2 different de objet 1, pour faire une paire
+			double distx = boules[i].xpos - boules[j].xpos;
+			double disty = boules[i].ypos - boules[j].ypos;
+			double dist2 = distx * distx + disty * disty; //pour opti
+			double distmin = boules[i].size + boules[j].size;
+
+			//check overlapping, and existance
+			if (dist2 < distmin * distmin && boules[i].tire == false && boules[j].tire == false) {
+				//double dist1 = sqrt(dist2);
+				double distToMove = distmin - sqrt(dist2);
+				double angle = atan2(disty, distx);
+
+				const double massRatio1 = boules[j].size / (boules[i].size + boules[j].size);
+				const double massRatio2 = boules[i].size / (boules[i].size + boules[j].size);
+				boules[i].xpos += cos(angle)*distToMove * massRatio1;
+				boules[i].ypos += sin(angle)*distToMove * massRatio1;
+				boules[j].xpos -= cos(angle)*distToMove * massRatio2;
+				boules[j].ypos -= sin(angle)*distToMove * massRatio2;
+			}
+		}
+	}
+
+}
+
+
 void Simulation::ResolveConstraint(){
 	//application des contrainte de mouvement :
 	//zone de mouvement : cercle de taille de la fenettre centre (win_width = radius)
+
+	//Collision avec la bordure
 	double zoneRadius = win_width/2 ;//rayon de la zone libre
 	for (int i = 0; i < nbBoule; i++) {
 		double distx = (win_width/2) -  boules[i].xpos;//distance de la boule au centre 
@@ -261,6 +291,7 @@ void Simulation::ResolveConstraint(){
 		
 	}
 
+	//collision avec les brasseurs
 	for (int i = 0; i < nbBoule; i++){
 		for (int j = 0; j < nbBrasseur; j++){
 			double distx = brasseurs[j].xpos - boules[i].xpos;//distance entre les 2 cercles 

@@ -65,7 +65,8 @@ public:
 
 	//fonctions pour les balles
 	void ApplyForce();
-	void ResolveCollision();
+	void ResolveCollision(); 
+	void ResolveCollision2();
 	void ResolveConstraint();	
 	void UpdateBall();
 	void AddBall();
