@@ -28,6 +28,7 @@ Simulation::Simulation() {
 	deltaTime = 0.005;//par defaut (a changer dans le Init)
 	nbFrameSkip = 3;
 	time = 0;//augmente de 1 a chaque update
+	seed = 0; 
 	brasseurRNDpos = false;
 	bouleRNDpos = false;
 	nbBoule = 0; //changera dans Init
@@ -50,7 +51,7 @@ Simulation::Simulation() {
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
-void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir, double itimeBeforStart,bool ibrasseurRNDpos, bool ibouleRNDpos) {
+void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int Iseed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir, double itimeBeforStart,bool ibrasseurRNDpos, bool ibouleRNDpos, double IbounceNoiseBall, double IbounceNoiseBrass) {
 	deltaTime = dt;
 	nbBrasseur = nbbras;
 	nbTirage = nbTir;
@@ -60,6 +61,10 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 	brasseurRNDpos = ibrasseurRNDpos;
 	bouleRNDpos = ibouleRNDpos;
 	timeBeforStart = itimeBeforStart;
+	seed = Iseed;
+	PosNoise = IPosNoise;
+	bounceNoiseBall = IbounceNoiseBall;
+	bounceNoiseBrass = IbounceNoiseBrass;
 
 
 	//pour mettre les résultats
@@ -78,8 +83,8 @@ void Simulation::Init(double dt, int taille,double Bsize, double noise,int seed,
 		for (int i = 0; i <= t; i++) {
 			boules.push_back(Boule());
 			//bruit dans le placement des boules
-			double xnoise = rnd(seed, i)*noise;
-			double ynoise = rnd(seed + 1, i)*noise;
+			double xnoise = rnd(seed, i)* PosNoise;
+			double ynoise = rnd(seed + 1, i)* PosNoise;
 			boules[nbBoule].Init(nbBoule, centerX + ((Bsize*2 + Bmarge) * i) - ((Bsize*2 + Bmarge)*0.5*t) + xnoise, t * (Bsize*2 + Bmarge)*0.87 + centerY + ynoise, Bsize);
 			nbBoule++;
 			
@@ -158,7 +163,7 @@ void Simulation::Update() {
 	*/
 	ApplyForce();
 	ResolveCollision2(); //boule a element fixe
-	ResolveConstraint(); //boule a boule
+	ResolveConstraint2(); //boule a boule
 	UpdateBall();
 
 	Tirage();
@@ -244,7 +249,7 @@ void Simulation::ResolveCollision(){
 	}
 }
 
-void Simulation::ResolveCollision2() {
+void Simulation::ResolveCollision2() {//collision entre les boules seulement
 	const double bounceRate = 1.;
 	for (int i = 0; i < nbBoule; i++) { //objet 1
 		for (int j = i + 1; j < nbBoule; j++) { // objet 2 different de objet 1, pour faire une paire
@@ -256,8 +261,9 @@ void Simulation::ResolveCollision2() {
 			//check overlapping, and existance
 			if (dist2 < distmin * distmin && boules[i].tire == false && boules[j].tire == false) {
 				//double dist1 = sqrt(dist2);
+				double rnddir = (rnd(seed, i*j * time) * 2. - 1.) * bounceNoiseBall;
 				double distToMove = distmin - sqrt(dist2);
-				double angle = atan2(disty, distx);
+				double angle = atan2(disty, distx) + rnddir;
 
 				const double massRatio1 = boules[j].size / (boules[i].size + boules[j].size);
 				const double massRatio2 = boules[i].size / (boules[i].size + boules[j].size);
@@ -303,6 +309,46 @@ void Simulation::ResolveConstraint(){
 				const double ny = disty / dist;
 				boules[i].xpos = brasseurs[j].xpos - nx * (brasseurs[j].size + boules[i].size);
 				boules[i].ypos = brasseurs[j].ypos - ny * (brasseurs[j].size + boules[i].size);
+			}
+		}
+	}
+}
+
+void Simulation::ResolveConstraint2() {
+	//application des contrainte de mouvement :
+	//zone de mouvement : cercle de taille de la fenettre centre (win_width = radius)
+
+	//Collision avec la bordure
+	const double zoneRadius = win_width / 2;//rayon de la zone libre
+	const double bounceRate = 1;
+	for (int i = 0; i < nbBoule; i++) {
+		double distx = boules[i].xpos - zoneRadius;//distance de la boule au centre 
+		double disty = boules[i].ypos - zoneRadius;
+		double dist = sqrt(distx * distx + disty * disty);
+		double distmin = zoneRadius - boules[i].size;
+		if (dist > distmin && boules[i].tire == false) {
+			double rnddir = (rnd(seed, i * time) * 2. - 1.) * bounceNoiseBrass;
+			double distToMove = distmin - dist;
+			double angle = atan2(disty, distx) + rnddir; 
+			boules[i].xpos += cos(angle) * distToMove;
+			boules[i].ypos += sin(angle) * distToMove;
+		}
+
+	}
+
+	//collision avec les brasseurs
+	for (int i = 0; i < nbBoule; i++) {
+		for (int j = 0; j < nbBrasseur; j++) {
+			double distx = boules[i].xpos - brasseurs[j].xpos;//distance entre les 2 cercles 
+			double disty = boules[i].ypos - brasseurs[j].ypos;
+			double dist = sqrt(distx * distx + disty * disty);
+			double distmin = brasseurs[j].size + boules[i].size;
+			if (dist < distmin && boules[i].tire == false){
+				double rnddir = (rnd(seed, i * time) * 2. - 1.) * bounceNoiseBrass;
+				double distToMove = distmin - dist;
+				double angle = atan2(disty, distx);
+				boules[i].xpos += cos(angle) * distToMove;
+				boules[i].ypos += sin(angle) * distToMove;
 			}
 		}
 	}
