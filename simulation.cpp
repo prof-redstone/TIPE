@@ -65,7 +65,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int I
 	PosNoise = IPosNoise;
 	bounceNoiseBall = IbounceNoiseBall;
 	bounceNoiseBrass = IbounceNoiseBrass;
-
+	brassMaxSpeed = brasSpeed * dt;
 
 	//pour mettre les résultats
 	for (int i = 0; i < nbTirage; i++){
@@ -98,7 +98,6 @@ void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int I
 
 	//pour generer les brasseurs, taille position et rayon
 	double sizeBrasseur = brasSize; // rayon du brasseur
-	double speedBrasseur = brasSpeed*dt; //la vitesse de rotation des brasseurs
 	double angInitRnd = 0;
 	if (brasseurRNDpos) {//la postion de depart est random, 0 sinon
 		angInitRnd = rnd(seed, 1) * (2 * 3.1415);
@@ -106,7 +105,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int I
 	for (int i = 0; i < nbBrasseur; i++){
 		brasseurs.push_back(Brasseur()) ;
 		double angsec = (2 * 3.1415) / nbBrasseur;
-		brasseurs[i].Init(i * angsec + angInitRnd, (win_width/2)-sizeBrasseur, sizeBrasseur, speedBrasseur, win_width / 2, win_height / 2);
+		brasseurs[i].Init(i * angsec + angInitRnd, (win_width/2)-sizeBrasseur, sizeBrasseur, brassMaxSpeed, win_width / 2, win_height / 2);
 	}
 
 }
@@ -147,12 +146,7 @@ void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au déb
 
 //main function of program, call at each frame
 void Simulation::Update() {
-	if (rotate) {
-		UpdateBrasseur();
-	}
-	if (time*deltaTime > timeBeforStart) {//a partir de ce temps la roue se met à tourner
-		rotate = true;
-	}
+	
 
 	/*pour les balles :
 		ordre exection des etapes :
@@ -166,8 +160,16 @@ void Simulation::Update() {
 	ResolveConstraint2(); //boule a boule
 	UpdateBall();
 
+	SpeedBrass();//to controle speed of brasseur, accelerate it or decrease
 	Tirage();
 	time++;
+}
+
+void Simulation::SpeedBrass() {
+	if (time * deltaTime > timeBeforStart) {//a partir de ce temps la roue se met à tourner
+		rotate = true;
+	}
+	UpdateBrasseur(rotate ? 1 : 0);
 }
 
 void Simulation::Tirage() {
@@ -218,7 +220,6 @@ void Simulation::ApplyForce(){
 		boules[i].yacc = yf / boules[i].weight; //acceleration sur l'axe x
 	}
 }
-
 
 //ce qui fait que ça fonctionne, pour gerer les collisions avec les différentes balles
 void Simulation::ResolveCollision(){
@@ -276,7 +277,6 @@ void Simulation::ResolveCollision2() {//collision entre les boules seulement
 	}
 
 }
-
 
 void Simulation::ResolveConstraint(){
 	//application des contrainte de mouvement :
@@ -346,7 +346,7 @@ void Simulation::ResolveConstraint2() {
 			if (dist < distmin && boules[i].tire == false){
 				double rnddir = (rnd(seed, i * time) * 2. - 1.) * bounceNoiseBrass;
 				double distToMove = distmin - dist;
-				double angle = atan2(disty, distx);
+				double angle = atan2(disty, distx) + rnddir;
 				boules[i].xpos += cos(angle) * distToMove;
 				boules[i].ypos += sin(angle) * distToMove;
 			}
@@ -367,9 +367,15 @@ void Simulation::UpdateBall(){
 	}
 }
 
-void Simulation::UpdateBrasseur() {
-	for (int i = 0; i < nbBrasseur; i++)
-	{
+void Simulation::UpdateBrasseur(int acc) {
+	double forceAcc = 0.0000002;
+	for (int i = 0; i < nbBrasseur; i++){
+		if (acc == 1) {
+			brasseurs[i].speedAng += (brassMaxSpeed > brasseurs[i].speedAng) ? forceAcc : brassMaxSpeed - brasseurs[i].speedAng;
+		}
+		if (acc == 0) {
+			brasseurs[i].speedAng += (0. < brasseurs[i].speedAng) ? -forceAcc : 0 - brasseurs[i].speedAng;
+		}
 		brasseurs[i].Update();
 	}
 }

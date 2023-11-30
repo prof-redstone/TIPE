@@ -20,7 +20,7 @@ void Brasseur::Init(double a, double r, double s, double sr, int cX, int cY) {
 	angle = a;
 	rayon = r;
 	size = s;
-	speedAng = sr;
+	speedAng = 0;
 	centerX = cX;
 	centerY = cY;
 	xpos = centerX + cos(angle) * rayon;

@@ -18,7 +18,7 @@ Simulation simulation;
 int WIN_WIDTH = 800;//taille de la window 800*800
 int WIN_HEIGHT = 800;
 
-int nbFrameSkip = 20; //réduis le nombre d'image ce qui accelere la simulation
+int nbFrameSkip = 50; //réduis le nombre d'image ce qui accelere la simulation
 double dt = 0.0005; //delta time pourune boucle de simulation 0.0005
 
 __int64 seed = 2; //seed pour le random
@@ -29,16 +29,16 @@ double bounceNoiseBrass = 0.1;
 int nbBoule = 7; //nombre triagulaire de boule dans la simulation, 15 max, 7 c'est bien
 double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation //30
 
-int nbBrasseur = 10; //40
+int nbBrasseur = 40; //40
 double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation //12
-double brasseurSpeed = 0.3; //vitesse de rotation des brasseurs en rad/frame //0.7
+double brasseurSpeed = 0.4; //vitesse de rotation des brasseurs en rad/frame //0.7
 
 int nbTirage = 40; //nombre de boule total tirée avant la fin du programme
 double timebtwTirage = 50; //unite seconde un peu proportionnelle, 5 c'est bien
 double timeBeforStart = 2; //7 c'est bien
 
 bool brasseurRNDpos = false; //true
-bool bouleRNDpos = true; //true
+bool bouleRNDpos = false; //true
 
 void getParam(int argc, char* argv[]);//y'a pas de .h
 double GetPreciseTime();

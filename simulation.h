@@ -30,6 +30,7 @@ public:
 	int nbFrameSkip = 2;
 	bool finish;
 	bool brasseurRNDpos;
+	double brassMaxSpeed;
 	bool bouleRNDpos;
 	double timeBeforStart;
 	int seed;
@@ -75,11 +76,11 @@ public:
 	void ResolveConstraint2();
 	void UpdateBall();
 	void AddBall();
-
+	void SpeedBrass();
 	void Tirage();
 	int Detector();
 
-	void UpdateBrasseur();
+	void UpdateBrasseur(int acc);
 
 	void UpdateWindow(sf::RenderWindow& win);
 
