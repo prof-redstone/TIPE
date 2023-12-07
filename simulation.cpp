@@ -215,7 +215,7 @@ void Simulation::ApplyForce(){
 	for (int i = 0; i < nbBoule; i++) {
 		//Gravity Force 
 		//am=f donc a=f/m
-		double gravity = 1000;
+		double gravity = 1000; //1000
 		double yf = gravity * boules[i].weight; //foce sur l'axe x
 		boules[i].yacc = yf / boules[i].weight; //acceleration sur l'axe x
 	}

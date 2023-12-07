@@ -22,7 +22,8 @@ int nbFrameSkip = 50; //réduis le nombre d'image ce qui accelere la simulation
 double dt = 0.0005; //delta time pourune boucle de simulation 0.0005
 
 __int64 seed = 2; //seed pour le random
-double noise = 0.5; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
+bool rndSeed = true;
+double noise = 0.9; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
 double bounceNoiseBall = 0.1;
 double bounceNoiseBrass = 0.1;
 
@@ -31,11 +32,11 @@ double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulati
 
 int nbBrasseur = 40; //40
 double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation //12
-double brasseurSpeed = 0.4; //vitesse de rotation des brasseurs en rad/frame //0.7
+double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
 
-int nbTirage = 40; //nombre de boule total tirée avant la fin du programme
+int nbTirage = 30; //nombre de boule total tirée avant la fin du programme
 double timebtwTirage = 50; //unite seconde un peu proportionnelle, 5 c'est bien
-double timeBeforStart = 2; //7 c'est bien
+double timeBeforStart = 7; //7 c'est bien
 
 bool brasseurRNDpos = false; //true
 bool bouleRNDpos = false; //true
@@ -44,9 +45,9 @@ void getParam(int argc, char* argv[]);//y'a pas de .h
 double GetPreciseTime();
 
 void main(int argc, char* argv[]){
-    double time = GetPreciseTime();
-    seed = (__int64)(time);
-    cout << "seed with millis : " << seed << endl;
+    if (rndSeed) {
+        seed = (__int64)(GetPreciseTime());
+    }
     getParam(argc, argv);//pou recuperer tous les parametre de python
 
     RenderWindow window(VideoMode(WIN_WIDTH, WIN_HEIGHT, 32), "TIPE SIMULATION");
@@ -141,16 +142,18 @@ void getParam(int argc, char* argv[]) {
         }
     }
 
+    cout << "Seed : " + to_string(seed) << endl;
+    cout << "Pos init noise factor : " + to_string(noise) << endl;
+    cout << "Ball bounce noise factor : " + to_string(bounceNoiseBall) << endl;
+    cout << "Brass bounce noise factor : " + to_string(bounceNoiseBrass) << endl;
     cout << "Delta Time : " + to_string(dt) << endl; //devra etre fixe
     cout << "Nombre de boules : " + to_string(nbBoule) << endl;
     cout << "Taille boules : " + to_string(bouleSize) << endl; //devra etre fixe
-    cout << "Seed for noise : " + to_string(seed) << endl;
-    cout << "Noise factor : " + to_string(noise) << endl;
-    //cout << "Nombre brasseur : " + to_string(nbBrasseur) << endl; //devra etre fixe
+    cout << "Nombre brasseur : " + to_string(nbBrasseur) << endl; //devra etre fixe
     cout << "Brasseur speed : " + to_string(brasseurSpeed) << endl; //devra etre fixe
-    //cout << "Brasseur size : " + to_string(brasseurSize) << endl; //devra etre fixe
+    cout << "Brasseur size : " + to_string(brasseurSize) << endl; //devra etre fixe
     cout << "Square size : " + to_string(WIN_WIDTH) << endl; //devra etre fixe
-    cout << "Nombre frame skip :" + to_string(nbFrameSkip) << endl; //devra etre fixe
+    cout << "Nombre frame skip : " + to_string(nbFrameSkip) << endl; //devra etre fixe
     cout << "Nombre tirage : " + to_string(nbTirage) << endl;
     cout << "Intervalle tirage : " + to_string(timebtwTirage) << endl;
     cout << "Temps avant debut : " + to_string(timeBeforStart) << endl;
