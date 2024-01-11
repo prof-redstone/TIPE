@@ -33,17 +33,9 @@ void SetText(Text& txt, string str = "", Color col = Color::White, int size = 26
 
 int PRNG(int seed, int index)
 {
-    // our initial starting seed is 5323
     static unsigned int nSeed = seed*5323 + index*8647;
-
-    // Take the current seed and generate a new value from it
-    // Due to our use of large constants and overflow, it would be
-    // very hard for someone to predict what the next number is
-    // going to be from the previous one.
     nSeed = (8253729 * nSeed + 2396403);
-
-    // Take the seed and return a value between 0 and 32767
-    return nSeed % 32767;
+    return nSeed;
 }
 
 double rnd(int seed, int index) {
@@ -68,4 +60,23 @@ vector <Boule> shuffle(vector <Boule> tab, int n,int seed) { //juste echanger le
         tab[i].ResetSpeed();
     }
     return tab;
+}
+
+float lerp(float a, float b, float t) {
+    return a + t * (b - a);
+}
+
+float perlin_noise(int seed, float x) {
+    // Prépare les variables
+    const float zoom = 4.0;
+    float u = x * zoom;
+    int i = int(u);
+    float f = u - i;
+
+    // Génère les valeurs aléatoires
+    float v1 = rnd(seed, i);
+    float v2 = rnd(seed, i + 1);
+
+    // Calcule le bruit
+    return lerp(v1, v2, f);
 }

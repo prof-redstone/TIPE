@@ -32,7 +32,7 @@ double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulati
 
 int nbBrasseur = 40; //40
 double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation //12
-double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
+double brasseurSpeed = 0.0; //vitesse de rotation des brasseurs en rad/frame //0.7
 
 int nbTirage = 30; //nombre de boule total tirée avant la fin du programme
 double timebtwTirage = 50; //unite seconde un peu proportionnelle, 5 c'est bien

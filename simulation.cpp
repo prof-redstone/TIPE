@@ -163,6 +163,7 @@ void Simulation::Update() {
 	SpeedBrass();//to controle speed of brasseur, accelerate it or decrease
 	Tirage();
 	time++;
+	cout << to_string(perlin_noise(2, 12)) << endl;
 }
 
 void Simulation::SpeedBrass() {
