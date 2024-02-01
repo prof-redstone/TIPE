@@ -28,15 +28,15 @@ double bounceNoiseBall = 0.1; //0.1
 double bounceNoiseBrass = 0.1;//0.1
 
 int nbBoule = 7; //nombre triagulaire de boule dans la simulation, 15 max, 7 c'est bien
-double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation //30
+double bouleSize = 30.; //rayon de la taille des boules en pixel dans la simulation //30
 
 int nbBrasseur = 40; //40
-double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation //12
+double brasseurSize = 12.; //rayon de la taille des brasseurs en pixel dans la simulation //12
 double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
 
 int nbTirage = 30; //nombre de boule total tirée avant la fin du programme
-double timebtwTirage = 50; //unite seconde un peu proportionnelle, 5 c'est bien
-double timeBeforStart = 7; //7 c'est bien
+double timebtwTirage = 10.; //unite seconde un peu proportionnelle, 5 c'est bien
+double timeBeforStart = 7.; //7 c'est bien
 
 bool brasseurRNDpos = false; //true
 bool bouleRNDpos = false; //true

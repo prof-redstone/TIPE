@@ -158,12 +158,53 @@ void Simulation::Update() {
 	ResolveConstraint2(); //boule a boule
 	UpdateBall();
 
+	Routine();
 	SpeedBrass();//to controle speed of brasseur, accelerate it or decrease
 	Tirage();
 	time++;
 }
 
-//void Simulation::routine()
+void Simulation::Routine() {
+	static int timerR = 0;
+	timerR++;
+	//timeBeforStart ~= 7
+	//timeSuffle ~= 5
+	double accTime = 2.;
+	static int state = 0; //initialisation : 0   acceleration : 1    suffle : 2   deceleration : 3    tirage : 4
+	float secTime = (timerR * deltaTime);
+	if (nbTirageFait < nbTirage) {
+		if (state == 0 && secTime >= timeBeforStart) {
+			cout << "fin init, start" << endl;
+			timerR = 0;
+			state = 1;
+			return;
+		}
+		if (state == 1 && secTime >= accTime) {
+			cout << "fin acc, suffle" << endl;
+			timerR = 0;
+			state = 2;
+			return;
+		}
+		if (state == 2 && secTime >= 7) {
+			cout << "fin suffle, dec" << endl;
+			timerR = 0;
+			state = 3;
+			return;
+		}
+		if (state == 3 && secTime >= accTime) {
+			cout << "fin dec, tirage" << endl;
+			timerR = 0;
+			state = 4;
+			return;
+		}
+		if (state == 4) {
+			cout << "TIRAGE" << endl;
+			timerR = 0;
+			state = 1;
+			return;
+		}
+	}
+}
 
 void Simulation::SpeedBrass() {
 	if (time * deltaTime > timeBeforStart) {//a partir de ce temps la roue se met à tourner
