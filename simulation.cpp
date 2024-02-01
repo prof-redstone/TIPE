@@ -146,8 +146,6 @@ void Simulation::UpdateWindow(sf::RenderWindow& win) { //appele une fois au déb
 
 //main function of program, call at each frame
 void Simulation::Update() {
-	
-
 	/*pour les balles :
 		ordre exection des etapes :
 		1)gravity
@@ -163,8 +161,9 @@ void Simulation::Update() {
 	SpeedBrass();//to controle speed of brasseur, accelerate it or decrease
 	Tirage();
 	time++;
-	cout << to_string(perlin_noise(2, 12)) << endl;
 }
+
+//void Simulation::routine()
 
 void Simulation::SpeedBrass() {
 	if (time * deltaTime > timeBeforStart) {//a partir de ce temps la roue se met à tourner
@@ -369,14 +368,11 @@ void Simulation::UpdateBall(){
 }
 
 void Simulation::UpdateBrasseur(int acc) {
-	double forceAcc = 0.0000002;
-	for (int i = 0; i < nbBrasseur; i++){
-		if (acc == 1) {
-			brasseurs[i].speedAng += (brassMaxSpeed > brasseurs[i].speedAng) ? forceAcc : brassMaxSpeed - brasseurs[i].speedAng;
-		}
-		if (acc == 0) {
-			brasseurs[i].speedAng += (0. < brasseurs[i].speedAng) ? -forceAcc : 0 - brasseurs[i].speedAng;
-		}
+	double springForce = 0.002;
+	double desiredSpeed = acc ? brassMaxSpeed + brassMaxSpeed*0.1*(perlin_noise(seed, ((float)time) / 1000)) : 0.0;
+	double actuSpeed = brasseurs[0].speedAng;
+	for (int i = 0; i < nbBrasseur; i++) {
+		brasseurs[i].speedAng += (desiredSpeed - actuSpeed) * springForce;
 		brasseurs[i].Update();
 	}
 }

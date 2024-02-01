@@ -33,7 +33,7 @@ void SetText(Text& txt, string str = "", Color col = Color::White, int size = 26
 
 int PRNG(int seed, int index)
 {
-    static unsigned int nSeed = seed*5323 + index*8647;
+    unsigned int nSeed = seed*5323 + index*8647;
     nSeed = (8253729 * nSeed + 2396403);
     return nSeed;
 }

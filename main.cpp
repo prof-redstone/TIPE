@@ -24,15 +24,15 @@ double dt = 0.0005; //delta time pourune boucle de simulation 0.0005
 __int64 seed = 2; //seed pour le random
 bool rndSeed = true;
 double noise = 0.9; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
-double bounceNoiseBall = 0.1;
-double bounceNoiseBrass = 0.1;
+double bounceNoiseBall = 0.1; //0.1
+double bounceNoiseBrass = 0.1;//0.1
 
 int nbBoule = 7; //nombre triagulaire de boule dans la simulation, 15 max, 7 c'est bien
 double bouleSize = 30; //rayon de la taille des boules en pixel dans la simulation //30
 
 int nbBrasseur = 40; //40
 double brasseurSize = 12; //rayon de la taille des brasseurs en pixel dans la simulation //12
-double brasseurSpeed = 0.0; //vitesse de rotation des brasseurs en rad/frame //0.7
+double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
 
 int nbTirage = 30; //nombre de boule total tirée avant la fin du programme
 double timebtwTirage = 50; //unite seconde un peu proportionnelle, 5 c'est bien
