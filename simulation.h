@@ -77,7 +77,6 @@ public:
 	void UpdateBall();
 	void AddBall();
 	void Routine();
-	void SpeedBrass();
 	void Tirage();
 	int Detector();
 
