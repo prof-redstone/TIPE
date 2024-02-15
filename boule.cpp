@@ -18,7 +18,7 @@ Boule::Boule() {
 	tire = false;
 }
 
-void Boule::Init(int ind, int x, int y, double s) {
+void Boule::Init(int ind, double x, double y, double s) {
 	size = s;
 	index = ind;
 	xpos = x;

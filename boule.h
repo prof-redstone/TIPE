@@ -22,7 +22,7 @@ public:
 	bool tire;
 
 	Boule();
-	void Init(int ind, int x, int y, double s);
+	void Init(int ind, double x, double y, double s);
 	void ResetSpeed();
 	void AddSpeed(double speedx, double speedy, double dt);
 };

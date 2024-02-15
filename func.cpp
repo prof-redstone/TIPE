@@ -45,14 +45,11 @@ double rnd(int seed, int index) {
 
 vector <Boule> shuffle(vector <Boule> tab, int n,int seed) { //juste echanger les pos
     for (int i = 0; i < n; i++) {
-        int j = rnd(seed,i)* (n - i);
+        int j = (int)((rnd(seed, i)+1)/2 * (i));
         double tempx = tab[i].xpos;
         double tempy = tab[i].ypos;
-        //int temp = tab[i];
         tab[i].xpos = tab[j].xpos;
         tab[i].ypos = tab[j].ypos;
-        //tab[i] = tab[j];
-        //tab[j] = temp;
         tab[j].xpos = tempx;
         tab[j].ypos = tempy;
     }

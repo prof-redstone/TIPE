@@ -79,7 +79,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int I
 	double centerY = win_height / 2 - (taille /2)*(Bmarge + Bsize*2);
 	boules.clear();
 	nbBoule = 0;
-	for (int t = taille; t >= 0; t--){
+	for (int t = taille; t >= 0; t--){ //generer les boules
 		for (int i = 0; i <= t; i++) {
 			boules.push_back(Boule());
 			//bruit dans le placement des boules
@@ -91,8 +91,18 @@ void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int I
 		}
 	}
 
-	if (bouleRNDpos) {//on melange les positions des boules
+
+	for (int i = 0; i < nbBoule; i++) {
+		cout << i << endl;
+		//boules[i].ResetSpeed();
+	}
+
+	if (true) {//on melange les positions des boules
 		boules = shuffle(boules, nbBoule , seed);
+	}
+	for (int i = 0; i < nbBoule; i++) {
+		cout << i << endl;
+		//boules[i].ResetSpeed();
 	}
 
 
@@ -168,13 +178,14 @@ void Simulation::Routine() {
 	//timeBeforStart ~= 7
 	//timeSuffle ~= 5
 	double accTime = 4.;
-	static int state = 0; //initialisation : 0   acceleration : 1    suffle : 2   deceleration : 3    tirage : 4
+	double tirageTime = 2.;
+	static int state = 0; //initialisation : 0   acceleration : 1    suffle : 2   deceleration : 3    tirage : 4  stabilisation : 5
 	float secTime = (timerR * deltaTime);
 	if (state == 1 || state == 2) {
-		UpdateBrasseur(1);
+		UpdateBrasseur(1); //faire tourner
 	}
 	else {
-		UpdateBrasseur(0);
+		UpdateBrasseur(0); //ralentir/arreter
 	}
 
 	if (state == 4) {
@@ -183,31 +194,31 @@ void Simulation::Routine() {
 
 	if (nbTirageFait < nbTirage) {
 		if (state == 0 && secTime >= timeBeforStart) {
-			cout << "acceleration" << endl;
 			timerR = 0;
 			state = 1;
 			return;
 		}
 		if (state == 1 && secTime >= accTime) {
-			cout << "suffle" << endl;
 			timerR = 0;
 			state = 2;
 			return;
 		}
 		if (state == 2 && secTime >= 7) {
-			cout << "deceleration" << endl;
 			timerR = 0;
 			state = 3;
 			return;
 		}
 		if (state == 3 && secTime >= accTime) {
-			cout << "tirage" << endl;
 			timerR = 0;
 			state = 4;
 			return;
 		}
 		if (state == 4) {
-			cout << "restart" << endl;
+			timerR = 0;
+			state = 5;
+			return;
+		}
+		if (state == 5 && secTime >= tirageTime) {
 			timerR = 0;
 			state = 1;
 			return;
@@ -219,19 +230,14 @@ void Simulation::Routine() {
 void Simulation::Tirage() {
 
 	if (nbTirageFait < nbTirage) {
-		float step = ((time * deltaTime) - timeBeforStart) / timebtwTirage;
-		if (step > nbTirageFait + 1) {
-			int i = (int)floor(step)-1;
-
-			if (resTirage[i] == -1) {
-				int res = Detector();
-				if (res != -1) {//si il y a plus de boule
-					boules[res].tire = true;
-				}
-				resTirage[i] = res;
-				nbTirageFait++;
-			}
+		int res = Detector();
+		if (res != -1) {//si on a tiré une boule on la supprime du jeu
+			boules[res].tire = true;
 		}
+		resTirage[nbTirageFait] = res;
+		nbTirageFait++;
+		
+		
 	}else {
 		finish = true;
 	}
@@ -515,8 +521,10 @@ void Simulation::DrawTimer() {
 }
 
 void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour afficher le gb et les boules.
-	if (time % (nbFrameSkip+1) == 0) {//pour economiser les performances 
 
+	bool drawTimer = false;
+
+	if (time % (nbFrameSkip+1) == 0) {//pour economiser les performances 
 		win.clear();
 		//clear screen
 		Color black = Color(0,0,0,0);
@@ -529,7 +537,7 @@ void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour a
 		DrawBoule();
 		DrawBrasseur();
 		DrawDetector();
-		DrawTimer();
+		if (drawTimer) DrawTimer();
 
 		//creation de la texture par defaut
 		//image dans la texture
