@@ -27,13 +27,12 @@ public:
 
 	int win_width;//varaible global
 	int win_height;
-	int nbFrameSkip = 2;
 	bool finish;
 	bool brasseurRNDpos;
 	double brassMaxSpeed;
 	bool bouleRNDpos;
 	double timeBeforStart;
-	int seed;
+	__int64 seed;
 	double PosNoise;
 	double bounceNoiseBall;
 	double bounceNoiseBrass;
@@ -90,6 +89,7 @@ public:
 	void DrawBrasseur();
 	void DrawDetector();
 	void DrawTimer();
+	void DisplayDebugInfo(sf::RenderWindow& win);
 	sf::Color HSLtoRGB(double hueI, double const satI, double const darkI, double const alphaI);
 
 };

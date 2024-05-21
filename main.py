@@ -5,20 +5,20 @@ import matplotlib.pyplot as plt #faire les graphiques
 from statistics import mode
 
 #param simulation :
-nbSimulation = 20
-nbTirage = 10
-nbFrameSkip = 500
-noiseFactor = 0.18
+nbSimulation = 10
+nbTirage = 3
+nbFrameSkip = 100
+noiseFactor = 0.0
 nbBoule = 8
 nbBouleTriangle = int(nbBoule*(nbBoule + 1)/2)
 bouleSize = 30.0
 brasseurSpeed = 0.7
 timebtwTirage = 10.0
 dt = 0.001
-RNDBoulePos = 1 #true
-RNDbrasspos = 1 #true
-timeBeforStart = 10.0
-bounceNoise = 0.1
+RNDBoulePos = 0 #true
+RNDbrasspos = 0 #true
+timeBeforStart = 100.0
+bounceNoise = 0.00
 
 #analyse :
 factorSpeed = 0.5 #le taux de divergence pour considérer que les simulation sont différentes.
@@ -132,7 +132,8 @@ def show(tab, divtime):
         "\nnbBoule : " + str(nbBouleTriangle) + 
         "\ndt : " + str(dt) + 
         "\ntime : " + str(timebtwTirage) + 
-        "\ndivCap : " + str(factorSpeed)
+        "\ndivCap : " + str(factorSpeed) +
+        "\nbounceNoise" + str(bounceNoise)
         , verticalalignment='bottom', horizontalalignment='left')
     plt.subplots_adjust(right=0.75)
 

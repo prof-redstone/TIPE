@@ -26,7 +26,6 @@ Simulation::Simulation() {
 
 	//Boule part
 	deltaTime = 0.005;//par defaut (a changer dans le Init)
-	nbFrameSkip = 3;
 	time = 0;//augmente de 1 a chaque update
 	seed = 0; 
 	brasseurRNDpos = false;
@@ -510,35 +509,72 @@ void Simulation::Render(sf::RenderWindow & win) { //appele a chaque frame pour a
 
 	bool drawTimer = false;
 
-	if (time % (nbFrameSkip+1) == 0) {//pour economiser les performances 
-		win.clear();
-		//clear screen
-		Color black = Color(0,0,0,0);
-		for (int i = 0; i < win_width; i++) {
-			for (int j = 0; j < win_height; j++) {
-				image.setPixel(i, j, black);
-			}
+
+	win.clear();
+	//clear screen
+	Color black = Color(0,0,0,0);
+	for (int i = 0; i < win_width; i++) {
+		for (int j = 0; j < win_height; j++) {
+			image.setPixel(i, j, black);
 		}
-
-		DrawBoule();
-		DrawBrasseur();
-		DrawDetector();
-		if (drawTimer) DrawTimer();
-
-		//creation de la texture par defaut
-		//image dans la texture
-		texture.create(win_width, win_height);
-		texture.update(image);
-
-		//texture dans le sprite
-		sprite.setTexture(texture, false);
-
-
-		win.draw(BGsprt);
-		win.draw(sprite);
-
-		win.display();
 	}
+
+	DrawBoule();
+	DrawBrasseur();
+	DrawDetector();
+	if (drawTimer) DrawTimer();
+
+	//creation de la texture par defaut
+	//image dans la texture
+	texture.create(win_width, win_height);
+	texture.update(image);
+
+	//texture dans le sprite
+	sprite.setTexture(texture, false);
+
+
+	win.draw(BGsprt);
+	win.draw(sprite);
+	DisplayDebugInfo(win);
+	win.display();
+	
+}
+
+void Simulation::DisplayDebugInfo(sf::RenderWindow& win) {
+	sf::Font font;
+	if (!font.loadFromFile("C:/Windows/Fonts/arial.ttf")) {
+		// Handle error
+		std::cerr << "Failed to load font!" << std::endl;
+		return;
+	}
+
+	sf::Text text;
+	text.setFont(font);
+	text.setCharacterSize(20);
+	text.setFillColor(sf::Color::Red);
+
+
+	std::string debugInfo = "win_width: " + std::to_string(win_width) + "\n" +
+		"win_height: " + std::to_string(win_height) + "\n" +
+		"finish: " + std::to_string(finish) + "\n" +
+		"brasseurRNDpos: " + std::to_string(brasseurRNDpos) + "\n" +
+		"brassMaxSpeed: " + std::to_string(brassMaxSpeed) + "\n" +
+		"bouleRNDpos: " + std::to_string(bouleRNDpos) + "\n" +
+		"timeBeforStart: " + std::to_string(timeBeforStart) + "\n" +
+		"seed: " + std::to_string(seed) + "\n" +
+		"PosNoise: " + std::to_string(PosNoise) + "\n" +
+		"bounceNoiseBall: " + std::to_string(bounceNoiseBall) + "\n" +
+		"bounceNoiseBrass: " + std::to_string(bounceNoiseBrass) + "\n" +
+		"deltaTime: " + std::to_string(deltaTime) + "\n" +
+		"time: " + std::to_string(time) +"\n" +
+		"timebtwTirage: " + std::to_string(timebtwTirage) + "\n" +
+		"nbBoule: " + std::to_string(nbBoule) + "\n" +
+		"nbTirage: " + std::to_string(timebtwTirage);
+
+	text.setString(debugInfo);
+	text.setPosition(10, 10); // Positionne le texte en haut à gauche de la fenêtre
+
+	win.draw(text);
 }
 
 sf::Color Simulation::HSLtoRGB(double hueI, double const satI, double const darkI, double const alphaI)

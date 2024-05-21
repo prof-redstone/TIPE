@@ -18,7 +18,7 @@ Simulation simulation;
 int WIN_WIDTH = 800;//taille de la window 800*800
 int WIN_HEIGHT = 800;
 
-int nbFrameSkip = 50; //réduis le nombre d'image ce qui accelere la simulation
+int nbFrameSkip = 1000; //réduis le nombre d'image ce qui accelere la simulation
 double dt = 0.0005; //delta time pourune boucle de simulation 0.0005
 
 __int64 seed = 2; //seed pour le random, valeur qui changera si rndseed est true
@@ -34,7 +34,7 @@ int nbBrasseur = 40; //40
 double brasseurSize = 12.; //rayon de la taille des brasseurs en pixel dans la simulation //12
 double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
 
-int nbTirage = 10; //nombre de boule total tirée avant la fin du programme
+int nbTirage = 10; //nombre de boule total tirée avant la fin du programme 10
 double timebtwTirage = 10.; //unite seconde un peu proportionnelle, 10 c'est bien
 double timeBeforStart = 5.; //5 c'est bien
 
@@ -138,13 +138,13 @@ void getParam(int argc, char* argv[]) {
             brasseurRNDpos = stoi(argv[i + 1]);
         }
         if (strcmp(argv[i], "timeBeforStart") == 0) {
-            timeBeforStart = stoi(argv[i + 1]);
+            timeBeforStart = stod(argv[i + 1]);
         }
         if (strcmp(argv[i], "bounceNoiseBall") == 0) {
-            bounceNoiseBall = stoi(argv[i + 1]);
+            bounceNoiseBall = stod(argv[i + 1]);
         }
         if (strcmp(argv[i], "bounceNoiseBrass") == 0) {
-            bounceNoiseBrass = stoi(argv[i + 1]);
+            bounceNoiseBrass = stod(argv[i + 1]);
         }
     }
 
@@ -187,7 +187,5 @@ double GetPreciseTime() {
     double millis = hundredths_double*1000.;
 
     // Affiche le temps
-    //std::cout << "Le temps actuel est : " << secChar << " seconde" << std::endl;
-    //std::cout << "Le temps actuel est : " << millis << " seconde" << std::endl;
     return millis;
 }
