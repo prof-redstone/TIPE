@@ -42,7 +42,7 @@ Simulation::Simulation() {
 	//pour le tirage
 	nbTirage = 0; //nombre total de tirage a faire
 	nbTirageFait = 0; //pour garder le nombre de tirage deja execute 
-	timebtwTirage = 1000; //change de le INIT
+	timebtwTirage = 1000; //change dans le INIT
 	timeBeforStart = 1000;
 	vector <int> resTirage;
 	detectorX = win_width / 2;
@@ -92,19 +92,9 @@ void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int I
 	}
 
 
-	for (int i = 0; i < nbBoule; i++) {
-		cout << i << endl;
-		//boules[i].ResetSpeed();
-	}
-
-	if (true) {//on melange les positions des boules
+	if (bouleRNDpos) {//on melange les positions des boules
 		boules = shuffle(boules, nbBoule , seed);
 	}
-	for (int i = 0; i < nbBoule; i++) {
-		cout << i << endl;
-		//boules[i].ResetSpeed();
-	}
-
 
 	//pour generer les brasseurs, taille position et rayon
 	double sizeBrasseur = brasSize; // rayon du brasseur
@@ -175,8 +165,6 @@ void Simulation::Update() {
 void Simulation::Routine() {
 	static int timerR = 0;
 	timerR++;
-	//timeBeforStart ~= 7
-	//timeSuffle ~= 5
 	double accTime = 4.;
 	double tirageTime = 2.;
 	static int state = 0; //initialisation : 0   acceleration : 1    suffle : 2   deceleration : 3    tirage : 4  stabilisation : 5
@@ -189,7 +177,6 @@ void Simulation::Routine() {
 	}
 
 	if (state == 4) {
-		Tirage();
 	}
 
 	if (nbTirageFait < nbTirage) {
@@ -203,7 +190,7 @@ void Simulation::Routine() {
 			state = 2;
 			return;
 		}
-		if (state == 2 && secTime >= 7) {
+		if (state == 2 && secTime >= timebtwTirage) {
 			timerR = 0;
 			state = 3;
 			return;
@@ -214,6 +201,7 @@ void Simulation::Routine() {
 			return;
 		}
 		if (state == 4) {
+			Tirage();
 			timerR = 0;
 			state = 5;
 			return;
@@ -224,22 +212,20 @@ void Simulation::Routine() {
 			return;
 		}
 	}
+	else {
+		finish = true;
+	}
 }
 
 
 void Simulation::Tirage() {
-
 	if (nbTirageFait < nbTirage) {
 		int res = Detector();
 		if (res != -1) {//si on a tiré une boule on la supprime du jeu
 			boules[res].tire = true;
 		}
 		resTirage[nbTirageFait] = res;
-		nbTirageFait++;
-		
-		
-	}else {
-		finish = true;
+		nbTirageFait++;		
 	}
 }
 
