@@ -1,6 +1,5 @@
 
 #include <iostream> //pour ecrire dans la console.
-#include <random>
 #include <vector>
 #include <cmath>
 #include <SFML/Graphics.hpp>

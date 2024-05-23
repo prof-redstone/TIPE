@@ -30,6 +30,7 @@ Simulation::Simulation() {
 	seed = 0; 
 	brasseurRNDpos = false;
 	bouleRNDpos = false;
+	RNDForceBrass = false;
 	nbBoule = 0; //changera dans Init
 	vector < Boule > boules;
 
@@ -50,7 +51,7 @@ Simulation::Simulation() {
 }
 
 //pour initialiser les parametre, et remetre a 0 les boules
-void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int Iseed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir, double itimeBeforStart,bool ibrasseurRNDpos, bool ibouleRNDpos, double IbounceNoiseBall, double IbounceNoiseBrass) {
+void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int Iseed, int nbbras, double brasSize, double brasSpeed, int nbTir, double timebtwTir, double itimeBeforStart,bool ibrasseurRNDpos, bool ibouleRNDpos, double IbounceNoiseBall, double IbounceNoiseBrass, bool iRNDForceBrass) {
 	deltaTime = dt;
 	nbBrasseur = nbbras;
 	nbTirage = nbTir;
@@ -59,6 +60,7 @@ void Simulation::Init(double dt, int taille,double Bsize, double IPosNoise,int I
 	rotate = false;
 	brasseurRNDpos = ibrasseurRNDpos;
 	bouleRNDpos = ibouleRNDpos;
+	RNDForceBrass = iRNDForceBrass;
 	timeBeforStart = itimeBeforStart;
 	seed = Iseed;
 	PosNoise = IPosNoise;
@@ -404,14 +406,14 @@ void Simulation::UpdateBall(){
 
 void Simulation::UpdateBrasseur(int acc) {
 	double springForce = 0.002;
-	double desiredSpeed = acc ? brassMaxSpeed + brassMaxSpeed*0.1*(perlin_noise(seed, ((float)time) / 1000)) : 0.0;
+	double noiseForce = RNDForceBrass ? perlin_noise(seed, ((float)time) / 1000) : 0.5;
+	double desiredSpeed = acc ? brassMaxSpeed + brassMaxSpeed*0.0001*(noiseForce) : 0.0;
 	double actuSpeed = brasseurs[0].speedAng;
 	for (int i = 0; i < nbBrasseur; i++) {
 		brasseurs[i].speedAng += (desiredSpeed - actuSpeed) * springForce;
 		brasseurs[i].Update();
 	}
 }
-
 
 void Simulation::DrawBoule() { //pour afficher les boules une par une sur l'image
 	for (int i = 0; i < nbBoule; i++) { //indice de la boule
@@ -553,26 +555,31 @@ void Simulation::DisplayDebugInfo(sf::RenderWindow& win) {
 	text.setCharacterSize(20);
 	text.setFillColor(sf::Color::Red);
 
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(17); // Use fixed-point notation and set precision
 
-	std::string debugInfo = "win_width: " + std::to_string(win_width) + "\n" +
-		"win_height: " + std::to_string(win_height) + "\n" +
-		"finish: " + std::to_string(finish) + "\n" +
-		"brasseurRNDpos: " + std::to_string(brasseurRNDpos) + "\n" +
-		"brassMaxSpeed: " + std::to_string(brassMaxSpeed) + "\n" +
-		"bouleRNDpos: " + std::to_string(bouleRNDpos) + "\n" +
-		"timeBeforStart: " + std::to_string(timeBeforStart) + "\n" +
-		"seed: " + std::to_string(seed) + "\n" +
-		"PosNoise: " + std::to_string(PosNoise) + "\n" +
-		"bounceNoiseBall: " + std::to_string(bounceNoiseBall) + "\n" +
-		"bounceNoiseBrass: " + std::to_string(bounceNoiseBrass) + "\n" +
-		"deltaTime: " + std::to_string(deltaTime) + "\n" +
-		"time: " + std::to_string(time) +"\n" +
-		"timebtwTirage: " + std::to_string(timebtwTirage) + "\n" +
-		"nbBoule: " + std::to_string(nbBoule) + "\n" +
-		"nbTirage: " + std::to_string(timebtwTirage);
+	oss << "win_width: " << win_width << "\n"
+		<< "win_height: " << win_height << "\n"
+		<< "finish: " << finish << "\n"
+		<< "brasseurRNDpos: " << brasseurRNDpos << "\n"
+		<< "brassMaxSpeed: " << brassMaxSpeed << "\n"
+		<< "bouleRNDpos: " << bouleRNDpos << "\n"
+		<< "RNDForceBrass: " << RNDForceBrass << "\n"
+		<< "timeBeforStart: " << timeBeforStart << "\n"
+		<< "seed: " << seed << "\n"
+		<< "PosNoise: " << PosNoise << "\n"
+		<< "bounceNoiseBall: " << bounceNoiseBall << "\n"
+		<< "bounceNoiseBrass: " << bounceNoiseBrass << "\n"
+		<< "deltaTime: " << deltaTime << "\n"
+		<< "time: " << time << "\n"
+		<< "timebtwTirage: " << timebtwTirage << "\n"
+		<< "nbBoule: " << nbBoule << "\n"
+		<< "nbTirage: " << nbTirage;
+
+	std::string debugInfo = oss.str();
 
 	text.setString(debugInfo);
-	text.setPosition(10, 10); // Positionne le texte en haut à gauche de la fenêtre
+	text.setPosition(10, 10); // Position the text at the top-left corner of the window
 
 	win.draw(text);
 }

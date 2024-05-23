@@ -7,6 +7,8 @@
 #include <vector>
 #include <cmath>
 #include <ctime>  //to initialize random
+#include <sstream>
+#include <iomanip>
 
 
 using namespace sf;
@@ -31,6 +33,7 @@ public:
 	bool brasseurRNDpos;
 	double brassMaxSpeed;
 	bool bouleRNDpos;
+	bool RNDForceBrass;
 	double timeBeforStart;
 	__int64 seed;
 	double PosNoise;
@@ -62,7 +65,7 @@ public:
 
 	Simulation();
 
-	void Init(double dt, int taille, double Bsize, double Inoise, int Iseed, int nbbras, double brasSize, double brasSpeed, int nbTirage, double timebtwTirage, double itimeBeforStart, bool brasseurRNDpos, bool bouleRNDpos,double IbounceNoiseBall, double IbounceNoiseBass);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
+	void Init(double dt, int taille, double Bsize, double Inoise, int Iseed, int nbbras, double brasSize, double brasSpeed, int nbTirage, double timebtwTirage, double itimeBeforStart, bool brasseurRNDpos, bool bouleRNDpos,double IbounceNoiseBall, double IbounceNoiseBass, bool iRNDForceBrass);//dt C[0.001, 0.003] , taille (nb triangulaire) [10, 16], noise [0,
 
 
 	void Update();//fonction principale

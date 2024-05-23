@@ -18,14 +18,14 @@ Simulation simulation;
 int WIN_WIDTH = 800;//taille de la window 800*800
 int WIN_HEIGHT = 800;
 
-int nbFrameSkip = 1000; //réduis le nombre d'image ce qui accelere la simulation
+int nbFrameSkip = 50; //réduis le nombre d'image ce qui accelere la simulation
 double dt = 0.0005; //delta time pourune boucle de simulation 0.0005
 
 __int64 seed = 2; //seed pour le random, valeur qui changera si rndseed est true
 bool rndSeed = true;
-double noise = 0.9; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
-double bounceNoiseBall = 0.1; //0.1
-double bounceNoiseBrass = 0.1;//0.1
+double noise = 0.001; //quantite de bruit dans le positionnement des boules a l'etat initial //0.9
+double bounceNoiseBall = 0.0; //0.1
+double bounceNoiseBrass = 0.0;//0.1
 
 int nbBoule = 8; //nombre triagulaire de boule dans la simulation, 15 max, 7 c'est bien
 double bouleSize = 30.; //rayon de la taille des boules en pixel dans la simulation //30
@@ -34,12 +34,13 @@ int nbBrasseur = 40; //40
 double brasseurSize = 12.; //rayon de la taille des brasseurs en pixel dans la simulation //12
 double brasseurSpeed = 0.7; //vitesse de rotation des brasseurs en rad/frame //0.7
 
-int nbTirage = 10; //nombre de boule total tirée avant la fin du programme 10
+int nbTirage = 20; //nombre de boule total tirée avant la fin du programme 10
 double timebtwTirage = 10.; //unite seconde un peu proportionnelle, 10 c'est bien
 double timeBeforStart = 5.; //5 c'est bien
 
-bool brasseurRNDpos = true; //true
+bool brasseurRNDpos = false; //true
 bool bouleRNDpos = false; //true
+bool RNDForceBrass = false;
 
 void getParam(int argc, char* argv[]);//y'a pas de .h
 double GetPreciseTime();
@@ -58,7 +59,7 @@ void main(int argc, char* argv[]){
 
     
     simulation.UpdateWindow(window);//pour lui passer en parametre les parametres de la window, comme la taille.
-    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage, timeBeforStart, brasseurRNDpos, bouleRNDpos, bounceNoiseBall, bounceNoiseBrass);//fonction de test
+    simulation.Init(dt, nbBoule, bouleSize, noise, seed, nbBrasseur, brasseurSize, brasseurSpeed, nbTirage, timebtwTirage, timeBeforStart, brasseurRNDpos, bouleRNDpos, bounceNoiseBall, bounceNoiseBrass, RNDForceBrass);//fonction de test
 
 
 
@@ -136,6 +137,9 @@ void getParam(int argc, char* argv[]) {
         }
         if (strcmp(argv[i], "RNDbrassPos") == 0) {
             brasseurRNDpos = stoi(argv[i + 1]);
+        }
+        if (strcmp(argv[i], "RNDForceBrass") == 0) {
+            RNDForceBrass = stoi(argv[i + 1]);
         }
         if (strcmp(argv[i], "timeBeforStart") == 0) {
             timeBeforStart = stod(argv[i + 1]);

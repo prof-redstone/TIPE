@@ -5,16 +5,16 @@ import matplotlib.pyplot as plt #faire les graphiques
 from statistics import mode
 
 #param simulation :
-nbSimulation = 20
-nbTirage = 8
+nbSimulation = 70
+nbTirage = 1
 nbFrameSkip = 100000
 noiseFactor = 0.0 # Résiltat identique à partie de 0.000000000000001 
-nbBoule = 7
-nbBouleTriangle = int(nbBoule*(nbBoule + 1)/2)
+nbBoule = 6
+nbBouleTriangle = int(nbBoule*(nbBoule + 1)/2) + nbBoule
 bouleSize = 30.0
 brasseurSpeed = 0.7
-timebtwTirage = 15.0
-dt = 0.00005
+timebtwTirage = 30.0
+dt = 0.001
 RNDBoulePos = 0 #true
 RNDbrasspos = 0 #true
 RNDForceBrass = 1 #true
@@ -24,6 +24,9 @@ bounceNoise = 0.00000000000000001
 #analyse :
 factorSpeed = 0.5 #le taux de divergence pour considérer que les simulation sont différentes.
 
+print(nbBouleTriangle)
+score = [0 for i in range(0, nbBouleTriangle+1, 1)]
+
 #run lance 10 simulation avec differentes seed, moyenne les résultats
 def main():
     allres = []
@@ -32,27 +35,17 @@ def main():
         res = run(seed)
         allres.append(res)
         print(res)
-    #print(allres)
+    
+    print(allres)
+    print(score)
 
-    listeTranspo = [] #chaque liste, contient tous les ieme tirages
-    for i in range(0, nbTirage):
-        listeTranspo.append([])
-        for j in range(0, len(allres)):
-            listeTranspo[i].append(allres[j][i])
-    #print(listeTranspo)
+    allres_lin = [x[0] for x in allres]
+    print(allres_lin)
+    for x in allres_lin:
+        score[x] += 1
 
-    nbCorrelation = correlation(allres)
-    print(nbCorrelation)
+    print(score)
 
-
-    divtime = 0 
-    for i in range(0, nbTirage, 1):
-        if(nbCorrelation[i] >= factorSpeed):
-            divtime = i+2 #+1 tirage commence en 1, +1 on compte celui ou ca depasse
-        else:
-            break
-    #print(divtime)
-    show(nbCorrelation, divtime)
 
 
 #compte le nombre de correlation a chaque tirage et divise par nbSim
